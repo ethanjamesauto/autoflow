@@ -10,13 +10,13 @@ class Tensor {
    public:
     float* array;
     std::vector<int> shape;
+    int length;
 
     Tensor(float* array, std::vector<int>& shape);
     Tensor(float val, std::vector<int>& shape);
-
     ~Tensor();
 
-    std::vector<int> shape();
+    std::vector<int> getShape();
     void reshape(std::vector<int>& shape);
     void relu();
     void add(Tensor& other);
