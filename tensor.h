@@ -16,7 +16,6 @@ class Tensor {
     Tensor(float val, std::vector<int>& shape);
     ~Tensor();
 
-    std::vector<int> getShape();
     void reshape(std::vector<int>& shape);
     void relu();
     void add(Tensor& other);
