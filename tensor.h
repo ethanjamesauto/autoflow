@@ -11,8 +11,8 @@ class Tensor {
     float* array;
     std::vector<int> shape;
 
-    Tensor(float*, std::vector<int>& shape);
-    Tensor(float, std::vector<int>& shape);
+    Tensor(float* array, std::vector<int>& shape);
+    Tensor(float val, std::vector<int>& shape);
 
     ~Tensor();
 
