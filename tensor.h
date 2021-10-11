@@ -8,13 +8,12 @@
  */
 class Tensor {
    public:
-    float** array;
+    float* array;
     std::vector<int> shape;
 
-    Tensor(float**, std::vector<int> shape);
+    Tensor(float*, std::vector<int> shape);
     Tensor(float, std::vector<int> shape);
 
-    Tensor();
     ~Tensor();
 
     std::vector<int> shape();
