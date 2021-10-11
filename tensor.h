@@ -12,17 +12,19 @@ class Tensor {
     std::vector<int> shape;
     int length;
 
-    Tensor(float* array, std::vector<int>& shape);
-    Tensor(float val, std::vector<int>& shape);
+    Tensor(float* array, std::vector<int> shape);
+    Tensor(float val, std::vector<int> shape);
     ~Tensor();
 
-    Tensor reshape(std::vector<int>& shape);
+    Tensor clone();
+
+    void reluMutable();
+    void addMutable(Tensor& other);
+
+    Tensor reshape(std::vector<int> shape);
     Tensor relu();
     Tensor matmult(Tensor& one, Tensor& two);
     Tensor matmult(Tensor& one, Tensor& two, Tensor& result_container);
-
-    void reluMutable();
-    void addMutable(Tensor& other)
 };
 
 #endif
