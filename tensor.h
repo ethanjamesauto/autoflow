@@ -11,12 +11,18 @@ class Tensor {
     float** array;
     std::vector<int> shape;
 
+    Tensor(float**, std::vector<int> shape);
+    Tensor(float, std::vector<int> shape);
+
+    Tensor();
+    ~Tensor();
+
     std::vector<int> shape();
-    float** reshape(std::vector<int> shape);
-    float** matmult(Tensor one, Tensor two);
-    float** matmult(Tensor one, Tensor two, Tensor result_container);
-    float** add(Tensor other);
-    float** relu();
+    void reshape(std::vector<int> shape);
+    void relu();
+    void add(Tensor other);
+    Tensor matmult(Tensor one, Tensor two);
+    Tensor matmult(Tensor one, Tensor two, Tensor result_container);
 };
 
 #endif
