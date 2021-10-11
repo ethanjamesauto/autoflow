@@ -18,7 +18,7 @@ class Tensor {
 
     void reshape(std::vector<int>& shape);
     void relu();
-    void add(Tensor& other);
+    void addMutable(Tensor& other);
     Tensor matmult(Tensor& one, Tensor& two);
     Tensor matmult(Tensor& one, Tensor& two, Tensor& result_container);
 };
