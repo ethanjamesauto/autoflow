@@ -14,9 +14,9 @@ class Tensor {
 
     Tensor(float* array, std::vector<int> shape);
     Tensor(float val, std::vector<int> shape);
+    Tensor(const Tensor& t);
     ~Tensor();
-
-    Tensor clone();
+    Tensor& operator=(const Tensor& t);
 
     void reluMutable();
     void addMutable(Tensor& other);
