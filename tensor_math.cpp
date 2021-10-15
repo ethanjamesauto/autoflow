@@ -32,6 +32,12 @@ void Tensor::addMutable(const Tensor& other) {
     }
 }
 
+Tensor Tensor::add(const Tensor& other) const {
+    Tensor t(*this);
+    t.addMutable(other);
+    return t;
+}
+
 void Tensor::softmaxMutable() {
     double sum;
     for (int i = 0; i < length; i++) {
@@ -48,7 +54,7 @@ Tensor Tensor::softmax() const {
     t.softmaxMutable();
     return t;
 }
- 
+
 void Tensor::matmult(const Tensor& one, const Tensor& two, Tensor& result_container) {
     assert(result_container.shape == resultShape(one.shape, two.shape));
     int row1 = one.shape[0];

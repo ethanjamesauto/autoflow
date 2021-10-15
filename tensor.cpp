@@ -65,6 +65,7 @@ int main() {
     vector<int> dV{1, 7};
     Tensor tD(d, dV);
     tD = tD.softmax();
+    tD = tD.add(Tensor(50., tD.shape));
     for (int i = 0; i < tD.length; i++) {
         cout << tD.array[i] << " ";
     }

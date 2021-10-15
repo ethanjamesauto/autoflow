@@ -22,9 +22,11 @@ class Tensor {
     void softmaxMutable();
     void addMutable(const Tensor& other);
 
-    Tensor reshape(std::vector<int> shape) const;
     Tensor relu() const;
     Tensor softmax() const;
+    Tensor add(const Tensor& other) const;
+
+    Tensor reshape(std::vector<int> shape) const;
 
     static void matmult(const Tensor& one, const Tensor& two, Tensor& result_container);
     static Tensor matmult(const Tensor& one, const Tensor& two);
