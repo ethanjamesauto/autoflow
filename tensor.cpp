@@ -16,7 +16,7 @@ Tensor::Tensor(float* array, std::vector<int> shape) {
     this->length = getArrayLength(shape);
 }
 
-Tensor::Tensor(float val, std::vector<int> shape) {
+Tensor::Tensor(float val, const std::vector<int> shape) {
     this->shape = shape;
     this->length = getArrayLength(shape);
     this->array = new float[length];

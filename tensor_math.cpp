@@ -3,11 +3,11 @@
 #include <cassert>
 #include <cmath>
 
-constexpr float max(float a, float b) {
+constexpr float max(const float a, const float b) {
     return a > b ? a : b;
 }
 
-std::vector<int> resultShape(std::vector<int> a, std::vector<int> b) {
+std::vector<int> resultShape(const std::vector<int> a, const std::vector<int> b) {
     assert(a[1] == b[0]);
     std::vector<int> ret{a[0], b[1]};
     return ret;
@@ -19,13 +19,13 @@ void Tensor::reluMutable() {
     }
 }
 
-Tensor Tensor::relu() {
+Tensor Tensor::relu() const {
     Tensor t(*this);
     t.reluMutable();
     return t;
 }
 
-void Tensor::addMutable(Tensor& other) {
+void Tensor::addMutable(const Tensor& other) {
     assert(shape == other.shape);
     for (int i = 0; i < length; i++) {
         array[i] += other.array[i];
@@ -43,13 +43,13 @@ void Tensor::softmaxMutable() {
     }
 }
 
-Tensor Tensor::softmax() {
+Tensor Tensor::softmax() const {
     Tensor t(*this);
     t.softmaxMutable();
     return t;
 }
-
-void Tensor::matmult(Tensor& one, Tensor& two, Tensor& result_container) {
+ 
+void Tensor::matmult(const Tensor& one, const Tensor& two, Tensor& result_container) {
     assert(result_container.shape == resultShape(one.shape, two.shape));
     int row1 = one.shape[0];
     int row2 = two.shape[0];
@@ -66,7 +66,7 @@ void Tensor::matmult(Tensor& one, Tensor& two, Tensor& result_container) {
     }
 }
 
-Tensor Tensor::matmult(Tensor& one, Tensor& two) {
+Tensor Tensor::matmult(const Tensor& one, const Tensor& two) {
     Tensor result = Tensor(0., resultShape(one.shape, two.shape));
     matmult(one, two, result);
     return result;

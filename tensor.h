@@ -20,13 +20,13 @@ class Tensor {
 
     void reluMutable();
     void softmaxMutable();
-    void addMutable(Tensor& other);
+    void addMutable(const Tensor& other);
 
-    Tensor reshape(std::vector<int> shape);
-    Tensor relu();
-    Tensor softmax();
-    static Tensor matmult(Tensor& one, Tensor& two);
-    static void matmult(Tensor& one, Tensor& two, Tensor& result_container);
+    Tensor reshape(std::vector<int> shape) const;
+    Tensor relu() const;
+    Tensor softmax() const;
+    static Tensor matmult(const Tensor& one, const Tensor& two);
+    static void matmult(const Tensor& one, const Tensor& two, Tensor& result_container);
 };
 
 #endif
