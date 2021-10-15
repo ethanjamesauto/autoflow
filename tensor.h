@@ -23,8 +23,8 @@ class Tensor {
 
     Tensor reshape(std::vector<int> shape);
     Tensor relu();
-    Tensor matmult(Tensor& one, Tensor& two);
-    Tensor matmult(Tensor& one, Tensor& two, Tensor& result_container);
+    static Tensor matmult(Tensor& one, Tensor& two);
+    static void matmult(Tensor& one, Tensor& two, Tensor& result_container);
 };
 
 #endif
