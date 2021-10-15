@@ -2,21 +2,20 @@
 #define TENSOR_H
 
 #include <vector>
+#include <memory>
 
 /**
  * @brief Implementation of a tensor with variable shape. Essentially equivalent to a TensorFlow tensor.
  */
 class Tensor {
    public:
-    float* array;
+    std::shared_ptr<float[]> array;
     std::vector<int> shape;
     int length;
 
-    Tensor(float* array, std::vector<int> shape);
+    Tensor(std::shared_ptr<float[]> array, std::vector<int> shape);
     Tensor(float val, std::vector<int> shape);
     Tensor(const Tensor& t);
-    ~Tensor();
-    Tensor& operator=(const Tensor& t);
 
     void reluMutable();
     void softmaxMutable();
