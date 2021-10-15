@@ -25,8 +25,9 @@ class Tensor {
     Tensor reshape(std::vector<int> shape) const;
     Tensor relu() const;
     Tensor softmax() const;
-    static Tensor matmult(const Tensor& one, const Tensor& two);
+
     static void matmult(const Tensor& one, const Tensor& two, Tensor& result_container);
+    static Tensor matmult(const Tensor& one, const Tensor& two);
 };
 
 #endif

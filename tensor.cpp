@@ -25,6 +25,17 @@ Tensor::Tensor(float val, const std::vector<int> shape) {
     }
 }
 
+Tensor::Tensor(const Tensor& t) {
+    array = new float[t.length];
+    memcpy(array, t.array, sizeof(float) * t.length);
+    shape = t.shape;
+    length = t.length;
+}
+
+Tensor::~Tensor() {
+    delete[] array;
+}
+
 Tensor& Tensor::operator=(const Tensor& t) {
     if (this != &t) {
         float* newArr = new float[t.length];
@@ -37,17 +48,6 @@ Tensor& Tensor::operator=(const Tensor& t) {
         length = t.length;
     }
     return *this;
-}
-
-Tensor::~Tensor() {
-    delete[] array;
-}
-
-Tensor::Tensor(const Tensor& t) {
-    array = new float[t.length];
-    memcpy(array, t.array, sizeof(float) * t.length);
-    shape = t.shape;
-    length = t.length;
 }
 
 #include <iostream>
