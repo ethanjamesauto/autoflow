@@ -1,8 +1,8 @@
 #ifndef TENSOR_H
 #define TENSOR_H
 
-#include <vector>
 #include <memory>
+#include <vector>
 
 /**
  * @brief Implementation of a tensor with variable shape. Essentially equivalent to a TensorFlow tensor.
