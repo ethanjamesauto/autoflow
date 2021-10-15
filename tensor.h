@@ -19,10 +19,12 @@ class Tensor {
     Tensor& operator=(const Tensor& t);
 
     void reluMutable();
+    void softmaxMutable();
     void addMutable(Tensor& other);
 
     Tensor reshape(std::vector<int> shape);
     Tensor relu();
+    Tensor softmax();
     static Tensor matmult(Tensor& one, Tensor& two);
     static void matmult(Tensor& one, Tensor& two, Tensor& result_container);
 };
