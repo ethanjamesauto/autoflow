@@ -28,9 +28,9 @@ class Tensor {
 
     Tensor reshape(std::vector<int> shape) const;
 
-    static void matmult(const Tensor& one, const Tensor& two, Tensor& result_container);
+    static void matmult(const Tensor& one, const Tensor& two, Tensor& out);
     static Tensor matmult(const Tensor& one, const Tensor& two);
-    static void outer_product(const Tensor& one, const Tensor& two, Tensor& result_container);
+    static void outer_product(const Tensor& one, const Tensor& two, Tensor& out);
 };
 
 #endif
