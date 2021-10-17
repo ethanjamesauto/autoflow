@@ -77,3 +77,9 @@ Tensor Tensor::matmult(const Tensor& one, const Tensor& two) {
     matmult(one, two, result);
     return result;
 }
+
+void Tensor::outer_product(const Tensor& one, const Tensor& two, Tensor& result_container) {
+    assert(one.shape.size() == 2 && two.shape.size() == 2);
+    assert(one.shape[1] == 1 && two.shape[1] == 1);
+    assert(result_container.shape[0] == one.shape[0] && result_container.shape[0] == two.shape[0]);
+}
