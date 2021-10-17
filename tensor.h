@@ -19,6 +19,8 @@ class Tensor {
     Tensor(float val, std::vector<int> shape);
     Tensor(const Tensor& t);
 
+    void print();
+
     void reluMutable();
     void softmaxMutable();
     void addMutable(const Tensor& other);

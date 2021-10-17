@@ -31,8 +31,6 @@ int main() {
     Tensor out = Tensor::matmult(w, in);
     Tensor actual({7, 2}, {2, 1});
     Tensor grad = gradMse(out, actual);
-    for (int i = 0; i < out.length; i++) {
-        cout << grad.array[i] << " ";
-    }
-    cout << std::endl << Tensor::mse(out, actual);
+    grad.print();
+    cout << Tensor::mse(out, actual);
 }

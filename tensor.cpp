@@ -1,6 +1,7 @@
 #include "tensor.h"
 
 #include <cstring>
+#include <iostream>
 
 int getArrayLength(std::vector<int> shape) {
     int ret = 1;
@@ -45,6 +46,13 @@ Tensor::Tensor(const Tensor& t) {
     memcpy(array.get(), t.array.get(), sizeof(float) * t.length);
     shape = t.shape;
     length = t.length;
+}
+
+void Tensor::print() {
+    for (int i = 0; i < this->length; i++) {
+        std::cout << this->array[i] << " ";
+    }
+    std::cout << std::endl;
 }
 
 #include <iostream>
