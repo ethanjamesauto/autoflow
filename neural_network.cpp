@@ -1,12 +1,10 @@
 #include "neural_network.h"
 
-Layer::Layer(Tensor& matrix, Tensor& addVector, std::string& activatorType) {
-    this->matrix = matrix;
-    this->addVector = addVector;
-    this->activatorType = activatorType;
+Operation::Operation(std::string& operationType) {
+    this->operationType = operationType;
 }
 
-NeuralNetwork::NeuralNetwork(std::vector<Layer> sequence) {
+NeuralNetwork::NeuralNetwork(std::vector<Operation> sequence) {
     this->sequence = sequence;
 }
 
