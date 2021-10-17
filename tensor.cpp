@@ -41,7 +41,7 @@ Tensor::Tensor(const Tensor& t) {
 #include <iostream>
 using namespace std;
 
-int main() {
+int main1() {
     Tensor tA(shared_ptr<float[]>(new float[9]{.1, -1, 0, 8, 2, .3, 7, 8, 6}), {3, 3});
     Tensor tB(shared_ptr<float[]>(new float[3]{7, 8, 2}), {3, 1});
     Tensor tC = Tensor::matmult(tA, tB);
@@ -54,4 +54,5 @@ int main() {
         cout << tD.array[i] << " ";
     }
     cout << std::endl;
+    return 0;
 }
