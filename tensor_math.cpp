@@ -55,8 +55,8 @@ Tensor Tensor::softmax() const {
     return t;
 }
 
-void Tensor::matmult(const Tensor& one, const Tensor& two, Tensor& result_container) {
-    assert(result_container.shape == resultShape(one.shape, two.shape));
+void Tensor::matmult(const Tensor& one, const Tensor& two, Tensor& out) {
+    assert(out.shape == resultShape(one.shape, two.shape));
     int row1 = one.shape[0];
     int row2 = two.shape[0];
     int col1 = one.shape[1];
@@ -67,7 +67,7 @@ void Tensor::matmult(const Tensor& one, const Tensor& two, Tensor& result_contai
             for (int c = 0; c < col1; c++) {
                 dot += one.array[r * col1 + c] * two.array[c * col2 + ansC];
             }
-            result_container.array[r * col2 + ansC] = dot;
+            out.array[r * col2 + ansC] = dot;
         }
     }
 }
@@ -78,8 +78,13 @@ Tensor Tensor::matmult(const Tensor& one, const Tensor& two) {
     return result;
 }
 
-void Tensor::outer_product(const Tensor& one, const Tensor& two, Tensor& result_container) {
+void Tensor::outer_product(const Tensor& one, const Tensor& two, Tensor& out) {
     assert(one.shape.size() == 2 && two.shape.size() == 2);
     assert(one.shape[1] == 1 && two.shape[1] == 1);
-    assert(result_container.shape[0] == one.shape[0] && result_container.shape[0] == two.shape[0]);
+    assert(out.shape[0] == one.shape[0] && out.shape[1] == two.shape[0]);
+    for (int r = 0; r < out.shape[0]; r++) {
+        for (int c = 0; c < out.shape[1]; c++) {
+            out.array[r * out.shape[1] + c] = one.array[r] * two.array[c];
+        }
+    }
 }
