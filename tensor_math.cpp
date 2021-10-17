@@ -88,3 +88,12 @@ void Tensor::outer_product(const Tensor& one, const Tensor& two, Tensor& out) {
         }
     }
 }
+
+float Tensor::mse(const Tensor& exp, const Tensor& actual) {
+    assert(exp.shape == actual.shape);
+    float ans = 0;
+    for (int i = 0; i < exp.length; i++) {
+        ans += std::pow(actual.array[i] - exp.array[i], 2.);
+    }
+    return ans / exp.length;
+}
