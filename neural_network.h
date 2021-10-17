@@ -1,4 +1,4 @@
-#include <memory>
+#include <vector>
 #include <string>
 #include "tensor.h"
 
@@ -17,9 +17,9 @@ struct Layer {
 
 class NeuralNetwork {
    public:
-    std::shared_ptr<Layer[]> sequence;
+    std::vector<Layer> sequence;
 
-    NeuralNetwork(std::shared_ptr<Layer[]> sequence);
+    NeuralNetwork(std::vector<Layer> sequence);
 
     void backpropagate();
 };
