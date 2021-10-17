@@ -38,6 +38,18 @@ Tensor Tensor::add(const Tensor& other) const {
     return t;
 }
 
+void Tensor::scalarMultMutable(float scalar) {
+    for (int i = 0; i < length; i++) {
+        array[i] *= scalar;
+    }
+}
+
+Tensor Tensor::scalarMult(float scalar) {
+    Tensor t(*this);
+    t.scalarMultMutable(scalar);
+    return t;
+}
+
 void Tensor::softmaxMutable() {
     double sum;
     for (int i = 0; i < length; i++) {

@@ -10,12 +10,12 @@ NeuralNetwork::NeuralNetwork(std::vector<Layer> sequence) {
     this->sequence = sequence;
 }
 
+#include <cassert>
 #include <iostream>
 #include <memory>
-#include <cassert>
 using namespace std;
 
-Tensor gradMse(Tensor& exp, Tensor& actual)  {
+Tensor gradMse(Tensor& exp, Tensor& actual) {
     assert(exp.shape == actual.shape);
     Tensor grad(0., exp.shape);
     float scalar = 2. / exp.length;
@@ -33,5 +33,6 @@ int main() {
     Tensor grad(0., {2, 2});
     Tensor::outer_product(gradMse(out, actual), in, grad);
     grad.print();
-    cout << Tensor::mse(out, actual);
+    cout << Tensor::mse(out, actual) << endl;
+    in.scalarMult(.5).print();
 }

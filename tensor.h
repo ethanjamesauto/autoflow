@@ -24,10 +24,12 @@ class Tensor {
     void reluMutable();
     void softmaxMutable();
     void addMutable(const Tensor& other);
+    void scalarMultMutable(float scalar);
 
     Tensor relu() const;
     Tensor softmax() const;
     Tensor add(const Tensor& other) const;
+    Tensor scalarMult(float scalar);
 
     Tensor reshape(std::vector<int> shape) const;
 
