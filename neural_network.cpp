@@ -30,7 +30,8 @@ int main() {
     Tensor w({1, 2, 3, 4}, {2, 2});
     Tensor out = Tensor::matmult(w, in);
     Tensor actual({7, 2}, {2, 1});
-    Tensor grad = gradMse(out, actual);
+    Tensor grad(0., {2, 2});
+    Tensor::outer_product(gradMse(out, actual), in, grad);
     grad.print();
     cout << Tensor::mse(out, actual);
 }
