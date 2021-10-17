@@ -15,6 +15,7 @@ class Tensor {
 
     Tensor();
     Tensor(std::shared_ptr<float[]> array, std::vector<int> shape);
+    Tensor(std::vector<float> array, std::vector<int> shape);
     Tensor(float val, std::vector<int> shape);
     Tensor(const Tensor& t);
 

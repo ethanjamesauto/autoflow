@@ -22,6 +22,15 @@ Tensor::Tensor(std::shared_ptr<float[]> array, std::vector<int> shape) {
     this->length = getArrayLength(shape);
 }
 
+Tensor::Tensor(std::vector<float> array, std::vector<int> shape) {
+    this->shape = shape;
+    this->length = getArrayLength(shape);
+    this->array = std::shared_ptr<float[]>(new float[length]);
+    for (int i = 0; i < length; i++) {
+        this->array[i] = array[i];
+    }
+}
+
 Tensor::Tensor(float val, const std::vector<int> shape) {
     this->shape = shape;
     this->length = getArrayLength(shape);
