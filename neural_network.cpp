@@ -15,10 +15,10 @@ NeuralNetwork::NeuralNetwork(std::vector<Layer> sequence) {
 using namespace std;
 
 int main() {
-    Tensor in(shared_ptr<float[]>(new float[2]{1, 2}), {2, 1});
-    Tensor w(shared_ptr<float[]>(new float[4]{1, 2, 3, 4}), {2, 2});
+    Tensor in({1, 2}, {2, 1});
+    Tensor w({1, 2, 3, 4}, {2, 2});
     Tensor out = Tensor::matmult(w, in);
-    Tensor actual(shared_ptr<float[]>(new float[2]{1, 2}), {2, 1});
+    Tensor actual({1, 2}, {2, 1});
     for (int i = 0; i < out.length; i++) {
         cout << out.array[i] << " ";
     }
