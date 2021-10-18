@@ -32,12 +32,13 @@ Tensor gradSoftmax(Tensor& z) {
     }
     for (int k = 0; k < z.length; k++) {
         for (int l = 0; l < z.length; l++) {
-            ret.array[k * z.length + l] = 0;
+            float& val = ret.array[k * z.length + l];
+            val = 0;
             if (k == l) {
-                ret.array[k * z.length + l] += x * exp(z.array[k]);
+                val += x * exp(z.array[k]);
             }
-            ret.array[k * z.length + l] -= exp(z.array[k]) * exp(z.array[l]);
-            ret.array[k * z.length + l] /= x * x;
+            val -= exp(z.array[k]) * exp(z.array[l]);
+            val /= x * x;
         }
     }
     return ret;
