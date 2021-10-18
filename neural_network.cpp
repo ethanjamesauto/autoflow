@@ -9,6 +9,7 @@ NeuralNetwork::NeuralNetwork(std::vector<Operation> sequence) {
 }
 
 #include <cassert>
+#include <cmath>
 #include <iostream>
 #include <memory>
 using namespace std;
@@ -23,14 +24,55 @@ Tensor gradMse(Tensor& exp, Tensor& actual) {
     return grad;
 }
 
+Tensor gradSoftmax(Tensor& z) {
+    Tensor ret(0., {z.length, z.length});
+    float x = 0;
+    for (int i = 0; i < z.length; i++) {
+        x += exp(z.array[i]);
+    }
+    for (int k = 0; k < z.length; k++) {
+        for (int l = 0; l < z.length; l++) {
+            ret.array[k * z.length + l] = 0;
+            if (k == l) {
+                ret.array[k * z.length + l] += x * exp(z.array[k]);
+            }
+            ret.array[k * z.length + l] -= exp(z.array[k]) * exp(z.array[l]);
+            ret.array[k * z.length + l] /= x * x;
+        }
+    }
+    return ret;
+}
+
+float randFloat() {
+    return rand() / (float)RAND_MAX;
+}
 int main() {
-    Tensor in({1, 2}, {2, 1});
-    Tensor w({1, 2, 3, 4}, {2, 2});
-    Tensor out = Tensor::matmult(w, in);
-    Tensor actual({7, 2}, {2, 1});
-    Tensor grad(0., {2, 2});
-    Tensor::outer_product(gradMse(out, actual), in, grad);
-    grad.print();
-    cout << Tensor::mse(out, actual) << endl;
-    in.scalarMult(.5).print();
+    int seed;
+    cin >> seed;
+    for (int i = 0; i < seed; i++) {
+        randFloat();
+    }
+    for (int k = 0; k < 100; k++) {
+        Tensor z({randFloat(), randFloat(), randFloat()}, {3, 1});
+        float m;
+        for (int epochs = 0; epochs < 1000; epochs++) {
+            Tensor s = z.softmax();
+            //cout << "Input: ";
+            //s.print();
+            Tensor a({.1, .7, .2}, {3, 1});
+            m = Tensor::mse(s, a);
+
+            Tensor gradM = gradMse(s, a);
+            gradM.shape = {1, 3};
+            Tensor gradSoft = gradSoftmax(z);
+            Tensor gradient = Tensor::matmult(gradM, gradSoft);
+            //gradient.print();
+
+            gradient.shape = {3, 1};
+            z.addMutable(gradient.scalarMult(-1.));
+        }
+        if (m > 1.e-5) {
+            cout << "Error: " << m << endl;
+        }
+    }
 }
