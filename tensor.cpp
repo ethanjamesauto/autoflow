@@ -54,22 +54,3 @@ void Tensor::print() {
     }
     std::cout << std::endl;
 }
-
-#include <iostream>
-using namespace std;
-
-int main1() {
-    Tensor tA(shared_ptr<float[]>(new float[9]{.1, -1, 0, 8, 2, .3, 7, 8, 6}), {3, 3});
-    Tensor tB(shared_ptr<float[]>(new float[3]{7, 8, 2}), {3, 1});
-    Tensor tC = Tensor::matmult(tA, tB);
-    shared_ptr<float[]> d(new float[7]{1.0, 2.0, 3.0, 4.0, 1.0, 2.0, 3.0});
-    vector<int> dV{1, 7};
-    Tensor tD(d, dV);
-    tD = tD.softmax();
-    tD = tD.add(Tensor(50., tD.shape));
-    for (int i = 0; i < tD.length; i++) {
-        cout << tD.array[i] << " ";
-    }
-    cout << std::endl;
-    return 0;
-}
