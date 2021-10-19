@@ -1,9 +1,5 @@
 #include "neural_network.h"
 
-Operation::Operation(std::string& operationType) {
-    this->operationType = operationType;
-}
-
 NeuralNetwork::NeuralNetwork(std::vector<Operation> sequence) {
     this->sequence = sequence;
 }
@@ -24,8 +20,7 @@ Tensor gradMse(Tensor& exp, Tensor& actual) {
     return grad;
 }
 
-Tensor gradSoftmax(Tensor& z) {
-    Tensor ret(0., {z.length, z.length});
+void gradSoftmax(Tensor& z, Tensor& ret) {
     float x = 0;
     for (int i = 0; i < z.length; i++) {
         x += exp(z.array[i]);
@@ -41,39 +36,50 @@ Tensor gradSoftmax(Tensor& z) {
             val /= x * x;
         }
     }
-    return ret;
 }
 
 float randFloat() {
-    return rand() / (float)RAND_MAX;
+    return rand() / (float)RAND_MAX * 2 - 1;
 }
+
+int size = 10;
 int main() {
     int seed;
     cin >> seed;
     for (int i = 0; i < seed; i++) {
         randFloat();
     }
-    for (int k = 0; k < 100; k++) {
-        Tensor z({randFloat(), randFloat(), randFloat()}, {3, 1});
+    for (int k = 0; k < 5; k++) {
+        Tensor z(0., {size, 1});
         float m;
+        Tensor s;
+        Tensor a(shared_ptr<float[]>(new float[size]), {size, 1});
+        Tensor gradSoft(0., {z.length, z.length});
+        for (int i = 0; i < z.length; i++) {
+            z.array[i] = randFloat();
+        }
+        for (int i = 0; i < a.length; i++) {
+            a.array[i] = randFloat();
+        }
+        cout << "Initial: ";
+        z.print();
+        a.softmaxMutable();
+        cout << "Expected: ";
+        a.print();
         for (int epochs = 0; epochs < 1000; epochs++) {
-            Tensor s = z.softmax();
-            //cout << "Input: ";
-            //s.print();
-            Tensor a({.1, .7, .2}, {3, 1});
+            s = z.softmax();
             m = Tensor::mse(s, a);
-
             Tensor gradM = gradMse(s, a);
-            gradM.shape = {1, 3};
-            Tensor gradSoft = gradSoftmax(z);
+            gradM.shape = {1, size};
+            gradSoftmax(z, gradSoft);
             Tensor gradient = Tensor::matmult(gradM, gradSoft);
             //gradient.print();
-
-            gradient.shape = {3, 1};
-            z.addMutable(gradient.scalarMult(-1.));
+            gradient.shape = {size, 1};
+            z.addMutable(gradient.scalarMult(-10.));
         }
-        if (m > 1.e-5) {
-            cout << "Error: " << m << endl;
-        }
+        cout << "Actual: ";
+        s.print();
+        cout << "Error: " << m << endl;
+        cout << endl;
     }
 }
