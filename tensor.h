@@ -22,20 +22,22 @@ class Tensor {
     void print();
 
     void reluMutable();
-    void softmaxMutable();
-    void addMutable(const Tensor& other);
-    void scalarMultMutable(float scalar);
-
     Tensor relu() const;
-    Tensor softmax() const;
-    Tensor add(const Tensor& other) const;
-    Tensor scalarMult(float scalar);
 
-    Tensor reshape(std::vector<int> shape) const;
+    void softmaxMutable();
+    Tensor softmax() const;
+
+    void addMutable(const Tensor& other);
+    Tensor add(const Tensor& other) const;
+
+    void scalarMultMutable(float scalar);
+    Tensor scalarMult(float scalar);
 
     static void matmult(const Tensor& one, const Tensor& two, Tensor& out);
     static Tensor matmult(const Tensor& one, const Tensor& two);
+
     static void outer_product(const Tensor& one, const Tensor& two, Tensor& out);
+    
     static float mse(const Tensor& exp, const Tensor& actual);
 };
 
