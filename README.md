@@ -2,7 +2,7 @@
 A machine learning framework for learning/testing machine learning concepts
 
 # Features
-This framework takes advantage of the relatively high-level data structures included in the C++11 standard, such as std::shared_ptr.
+This framework takes advantage of the relatively high-level data structures included in the C++11 standard, such as ```std::shared_ptr```.
 This means that there is no need to worry about the "rule of 3/5/0", as the pointers are automatically tracked using reference counting
 with minimal overhead.
 
