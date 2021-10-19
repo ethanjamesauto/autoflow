@@ -1,7 +1,6 @@
 #include "neural_network.h"
 
 struct MatrixMult : Operation {
-    Tensor weights;
     MatrixMult(Tensor* input, Tensor weights);
     void execute();
     void gradOp();
@@ -9,8 +8,8 @@ struct MatrixMult : Operation {
 };
 
 struct MSE : Operation {
-    MSE(Tensor* input)
-        : Operation(input) {}
+    Tensor actual;
+    MSE(Tensor* input, Tensor actual);
     void execute();
     void gradOp();
 };
