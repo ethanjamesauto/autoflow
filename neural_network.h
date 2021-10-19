@@ -6,13 +6,12 @@
 #define NEURAL_NETWORK_H
 
 struct Operation {
-    Tensor weights;
-    Tensor* input;
+    Tensor* input; //Note: be careful with this pointer! Stay away from new.
     Tensor output;
     Tensor gradOperation; //gradient of the output with respect to the input
     Tensor gradWeight; //gradient of the output with respect to the weight
-    std::string operationType;
-    Operation(std::string& operationType);
+    virtual void gradOp() {}
+    virtual void gradW() {}
 };
 
 class NeuralNetwork {
