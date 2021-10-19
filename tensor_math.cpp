@@ -7,7 +7,7 @@ constexpr float max(const float a, const float b) {
     return a > b ? a : b;
 }
 
-std::vector<int> resultShape(const std::vector<int> a, const std::vector<int> b) {
+std::vector<int> resultShape(const std::vector<int>& a, const std::vector<int>& b) {
     assert(a[1] == b[0]);
     std::vector<int> ret{a[0], b[1]};
     return ret;
