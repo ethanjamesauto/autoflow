@@ -33,6 +33,6 @@ class Softmax : public Operation {
     void execute();
     void gradOp();
     Tensor getGradOp();
-}
+};
 
 #endif
