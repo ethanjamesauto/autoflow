@@ -2,6 +2,7 @@
 
 class MatrixMult : public Operation {
     Tensor weights;
+    Tensor gradOperation;
 
    public:
     MatrixMult(Tensor* input, Tensor weights);
@@ -12,6 +13,7 @@ class MatrixMult : public Operation {
 
 class MSE : public Operation {
     Tensor actual;
+    Tensor gradOperation;
 
    public:
     MSE(Tensor* input, Tensor actual);
@@ -19,3 +21,13 @@ class MSE : public Operation {
     void gradOp();
     Tensor getGradOp();
 };
+
+class Softmax : public Operation {
+    Tensor gradOperation;
+
+   public:
+    Softmax(Tensor* input);
+    void execute();
+    void gradOp();
+    Tensor getGradOp();
+}
