@@ -38,3 +38,7 @@ void MSE::gradOp() {
         gradOperation.array[i] = scalar * (exp.array[i] - actual.array[i]);
     }
 }
+
+Tensor MSE::getGradOp() {
+    return gradOperation;
+}
