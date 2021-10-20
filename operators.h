@@ -1,5 +1,8 @@
 #include "neural_network.h"
 
+#ifndef OPERATORS_H
+#define OPERATORS_H
+
 class MatrixMult : public Operation {
     Tensor weights;
     Tensor gradOperation;
@@ -31,3 +34,5 @@ class Softmax : public Operation {
     void gradOp();
     Tensor getGradOp();
 }
+
+#endif
