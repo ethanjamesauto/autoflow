@@ -6,9 +6,6 @@
 #define NEURAL_NETWORK_H
 
 class Operation {
-   protected:
-    Tensor gradOperation;
-
    public:
     Tensor* input = NULL;  //Note: be careful with this pointer! Stay away from new.
     Tensor output;
