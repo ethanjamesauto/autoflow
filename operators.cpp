@@ -23,7 +23,7 @@ MSE::MSE(Tensor* input, Tensor actual)
     : Operation(input) {
     this->actual = actual;
     this->output = Tensor(0., {1});
-    this->gradWeight = Tensor(0., actual.shape);
+    this->gradOperation = Tensor(0., actual.shape);
 }
 
 void MSE::execute() {
@@ -35,6 +35,6 @@ void MSE::gradOp() {
     assert(exp.shape == actual.shape);
     float scalar = 2. / exp.length;
     for (int i = 0; i < exp.length; i++) {
-        gradWeight.array[i] = scalar * (exp.array[i] - actual.array[i]);
+        gradOperation.array[i] = scalar * (exp.array[i] - actual.array[i]);
     }
 }
