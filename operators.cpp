@@ -10,7 +10,7 @@ MatrixMult::MatrixMult(Tensor* input, Tensor weights)
     : Operation(input) {
     this->weights = weights;
     this->output = Tensor(input->shape);
-    this->gradWeights = Tensor(0., input->shape);
+    this->gradWeights = Tensor(input->shape);
 }
 
 void MatrixMult::execute() {
@@ -30,8 +30,8 @@ Tensor MatrixMult::getGradWeights() {
 MSE::MSE(Tensor* input, Tensor actual)
     : Operation(input) {
     this->actual = actual;
-    this->output = Tensor(0., {1});
-    this->gradOperation = Tensor(0., {actual.length, 1});
+    this->output = Tensor({1});
+    this->gradOperation = Tensor({actual.length, 1});
 }
 
 void MSE::execute() {
@@ -53,8 +53,8 @@ Tensor MSE::getGradOp() {
 
 Softmax::Softmax(Tensor* input)
     : Operation(input) {
-    this->output = Tensor(0., input->shape);
-    this->gradOperation = Tensor(0., {input->length, input->length});
+    this->output = Tensor(input->shape);
+    this->gradOperation = Tensor({input->length, input->length});
 }
 
 void Softmax::execute() {
