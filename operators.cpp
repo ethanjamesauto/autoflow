@@ -58,14 +58,7 @@ Softmax::Softmax(Tensor* input)
 }
 
 void Softmax::execute() {
-    double sum;
-    for (int i = 0; i < input->length; i++) {
-        output.array[i] = exp(input->array[i]);
-        sum += output.array[i];
-    }
-    for (int i = 0; i < input->length; i++) {
-        output.array[i] /= sum;
-    }
+    Tensor::softmax(*input, output);
 }
 
 //TODO: don't make an nxn tensor; for optizimation
