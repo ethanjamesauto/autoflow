@@ -10,8 +10,6 @@ class MatrixMult : public Operation {
    public:
     MatrixMult(Tensor* input, Tensor weights);
     void execute();
-    void gradOp();
-    void gradW();
     Tensor getGradOp();
     Tensor getGradWeights();
 };

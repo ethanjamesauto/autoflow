@@ -30,12 +30,6 @@ void MatrixMult::execute() {
     }
 }
 
-void MatrixMult::gradOp() {
-}
-
-void MatrixMult::gradW() {
-}
-
 Tensor MatrixMult::getGradOp() {
     return weights;
 }
