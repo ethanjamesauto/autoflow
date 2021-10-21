@@ -48,6 +48,18 @@ Tensor::Tensor(const Tensor& t) {
     length = t.length;
 }
 
+/**
+ * @brief Construct a new Tensor:: Tensor object.
+ * The values of the tensor are NOT initialized.
+ * 
+ * @param shape shape of the Tensor
+ */
+Tensor::Tensor(std::vector<int> shape) {
+    this->length = getArrayLength(shape);
+    this->array = std::shared_ptr<float[]>(new float[length]);
+    this->shape = shape;
+}
+
 void Tensor::print() {
     for (int i = 0; i < this->length; i++) {
         std::cout << this->array[i] << " ";
