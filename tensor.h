@@ -22,12 +22,15 @@ class Tensor {
 
     void print();
 
+    void reluMutable();
     static void relu(const Tensor& t, Tensor& out);
     Tensor relu() const;
 
+    void softmaxMutable();
     static void softmax(const Tensor& t, Tensor& out);
     Tensor softmax() const;
 
+    void addMutable(const Tensor& other);
     static void add(const Tensor& t, const Tensor& add, Tensor& out);
     Tensor add(const Tensor& other) const;
 
@@ -38,7 +41,7 @@ class Tensor {
     static Tensor matmult(const Tensor& one, const Tensor& two);
 
     static void outer_product(const Tensor& one, const Tensor& two, Tensor& out);
-    
+
     static float mse(const Tensor& exp, const Tensor& actual);
 };
 
