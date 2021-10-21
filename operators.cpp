@@ -9,12 +9,28 @@ Operation::Operation(Tensor* input) {
 MatrixMult::MatrixMult(Tensor* input, Tensor weights)
     : Operation(input) {
     this->weights = weights;
+    this->output = Tensor(0., input->shape);
 }
 
 void MatrixMult::execute() {
+    assert(out.shape == resultShape(input->shape, output.shape));
+    int row1 = input->shape[0];
+    int row2 = output.shape[0];
+    int col1 = input->shape[1];
+    int col2 = output.shape[1];
+    for (int r = 0; r < row1; r++) {
+        for (int ansC = 0; ansC < col2; ansC++) {
+            float dot = 0;
+            for (int c = 0; c < col1; c++) {
+                dot += input->array[r * col1 + c] * output.array[c * col2 + ansC];
+            }
+            out.array[r * col2 + ansC] = dot;
+        }
+    }
 }
 
 void MatrixMult::gradOp() {
+    
 }
 
 void MatrixMult::gradW() {
