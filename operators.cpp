@@ -13,7 +13,7 @@ MatrixMult::MatrixMult(Tensor* input, Tensor weights)
 }
 
 void MatrixMult::execute() {
-    assert(out.shape == resultShape(input->shape, output.shape));
+    //assert(out.shape == resultShape(input->shape, output.shape)); TODO: fix
     int row1 = input->shape[0];
     int row2 = output.shape[0];
     int col1 = input->shape[1];
@@ -24,13 +24,13 @@ void MatrixMult::execute() {
             for (int c = 0; c < col1; c++) {
                 dot += input->array[r * col1 + c] * output.array[c * col2 + ansC];
             }
-            out.array[r * col2 + ansC] = dot;
+            output.array[r * col2 + ansC] = dot;
         }
     }
 }
 
 void MatrixMult::gradOp() {
-    
+
 }
 
 void MatrixMult::gradW() {
