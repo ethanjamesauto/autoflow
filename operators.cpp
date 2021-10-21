@@ -40,7 +40,7 @@ MSE::MSE(Tensor* input, Tensor actual)
     : Operation(input) {
     this->actual = actual;
     this->output = Tensor(0., {1});
-    this->gradOperation = Tensor(0., {1, actual.length});
+    this->gradOperation = Tensor(0., {actual.length, 1});
 }
 
 void MSE::execute() {
