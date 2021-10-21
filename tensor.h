@@ -22,15 +22,12 @@ class Tensor {
 
     void print();
 
-    void reluMutable();
     static void relu(const Tensor& t, Tensor& out);
     Tensor relu() const;
 
-    void softmaxMutable();
     static void softmax(const Tensor& t, Tensor& out);
     Tensor softmax() const;
 
-    void addMutable(const Tensor& other);
     static void add(const Tensor& t, const Tensor& add, Tensor& out);
     Tensor add(const Tensor& other) const;
 
