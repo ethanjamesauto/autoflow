@@ -4,10 +4,10 @@
 #define OPERATORS_H
 
 class MatrixMult : public Operation {
-    Tensor weights;
     Tensor gradWeights;
 
    public:
+    Tensor weights;
     MatrixMult(Tensor* input, Tensor weights);
     void execute();
     Tensor getGradOp();
