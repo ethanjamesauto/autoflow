@@ -14,6 +14,15 @@ class MatrixMult : public Operation {
     Tensor getGradWeights();
 };
 
+class MatrixAdd : public Operation {
+   public:
+    Tensor weights;
+    MatrixAdd(Tensor* input, Tensor weights);
+    void execute();
+    Tensor getGradOp();
+    Tensor getGradWeights();
+};
+
 class MSE : public Operation {
     Tensor actual;
     Tensor gradOperation;

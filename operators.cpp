@@ -27,6 +27,24 @@ Tensor MatrixMult::getGradWeights() {
     return *input;
 }
 
+MatrixAdd ::MatrixAdd(Tensor* input, Tensor weights)
+    : Operation(input) {
+    this->weights = weights;
+    this->output = Tensor(input->shape);
+}
+
+void MatrixAdd::execute() {
+    Tensor::add(*input, weights, output);
+}
+
+Tensor MatrixAdd::getGradOp() {
+    return Tensor(1, input->shape);
+}
+
+Tensor MatrixAdd::getGradWeights() {
+    return Tensor(1, input->shape);
+}
+
 MSE::MSE(Tensor* input, Tensor actual)
     : Operation(input) {
     this->actual = actual;
