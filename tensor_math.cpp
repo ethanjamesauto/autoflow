@@ -13,57 +13,57 @@ std::vector<int> resultShape(const std::vector<int>& a, const std::vector<int>& 
     return ret;
 }
 
-void Tensor::reluMutable() {
-    for (int i = 0; i < length; i++) {
-        array[i] = max(array[i], 0);
+void Tensor::relu(const Tensor& t, Tensor& out) {
+    for (int i = 0; i < t.length; i++) {
+        out.array[i] = max(t.array[i], 0);
     }
 }
 
 Tensor Tensor::relu() const {
-    Tensor t(*this);
-    t.reluMutable();
+    Tensor t(shape);
+    relu(*this, t);
     return t;
 }
 
-void Tensor::addMutable(const Tensor& other) {
-    assert(shape == other.shape);
-    for (int i = 0; i < length; i++) {
-        array[i] += other.array[i];
+void Tensor::add(const Tensor& t, const Tensor& other, Tensor& out) {
+    assert(t.shape == other.shape);
+    for (int i = 0; i < t.length; i++) {
+        out.array[i] = t.array[i] + other.array[i];
     }
 }
 
 Tensor Tensor::add(const Tensor& other) const {
-    Tensor t(*this);
-    t.addMutable(other);
+    Tensor t(other.shape);
+    add(*this, other, t);
     return t;
 }
 
-void Tensor::scalarMultMutable(float scalar) {
-    for (int i = 0; i < length; i++) {
-        array[i] *= scalar;
+void Tensor::scalarMult(const Tensor& t, float scalar, Tensor& out) {
+    for (int i = 0; i < t.length; i++) {
+        out.array[i] = t.array[i] * scalar;
     }
 }
 
 Tensor Tensor::scalarMult(float scalar) {
-    Tensor t(*this);
-    t.scalarMultMutable(scalar);
+    Tensor t(shape);
+    scalarMult(*this, scalar, t);
     return t;
 }
 
-void Tensor::softmaxMutable() {
+void Tensor::softmax(const Tensor& t, Tensor& out) {
     double sum;
-    for (int i = 0; i < length; i++) {
-        array[i] = exp(array[i]);
-        sum += array[i];
+    for (int i = 0; i < t.length; i++) {
+        out.array[i] = exp(t.array[i]);
+        sum += out.array[i];
     }
-    for (int i = 0; i < length; i++) {
-        array[i] /= sum;
+    for (int i = 0; i < t.length; i++) {
+        out.array[i] /= sum;
     }
 }
 
 Tensor Tensor::softmax() const {
-    Tensor t(*this);
-    t.softmaxMutable();
+    Tensor t(shape);
+    softmax(*this, t);
     return t;
 }
 
@@ -88,6 +88,13 @@ Tensor Tensor::matmult(const Tensor& one, const Tensor& two) {
     Tensor result = Tensor(0., resultShape(one.shape, two.shape));
     matmult(one, two, result);
     return result;
+}
+
+void Tensor::elementmult(const Tensor& one, const Tensor& two, Tensor& out) {
+    assert(one.shape == two.shape && one.shape == out.shape);
+    for (int i = 0; i < one.length; i++) {
+        out.array[i] = one.array[i] * two.array[i];
+    }
 }
 
 void Tensor::outer_product(const Tensor& one, const Tensor& two, Tensor& out) {
