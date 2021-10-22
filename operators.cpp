@@ -45,6 +45,26 @@ Tensor MatrixAdd::getGradWeights() {
     return Tensor(1, input->shape);
 }
 
+Relu::Relu(Tensor* input)
+    : Operation(input) {
+    this->output = Tensor(input->shape);
+    this->gradOperation = Tensor(input->shape);
+}
+
+void Relu::execute() {
+    Tensor::relu(*input, output);
+}
+
+void Relu::gradOp() {
+    for (int i = 0; i < input->length; i++) {
+        gradOperation.array[i] = input->array[i] > 0 ? 1 : 0;
+    }
+}
+
+Tensor Relu::getGradOp() {
+    return gradOperation;
+}
+
 MSE::MSE(Tensor* input, Tensor actual)
     : Operation(input) {
     this->actual = actual;

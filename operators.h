@@ -23,6 +23,16 @@ class MatrixAdd : public Operation {
     Tensor getGradWeights();
 };
 
+class Relu : public Operation {
+    Tensor gradOperation;
+
+   public:
+    Relu(Tensor* input);
+    void execute();
+    void gradOp();
+    Tensor getGradOp();
+};
+
 class MSE : public Operation {
     Tensor actual;
     Tensor gradOperation;
