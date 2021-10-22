@@ -90,6 +90,13 @@ Tensor Tensor::matmult(const Tensor& one, const Tensor& two) {
     return result;
 }
 
+void Tensor::elementmult(const Tensor& one, const Tensor& two, Tensor& out) {
+    assert(one.shape == two.shape && one.shape == out.shape);
+    for (int i = 0; i < one.length; i++) {
+        out.array[i] = one.array[i] * two.array[i];
+    }
+}
+
 void Tensor::outer_product(const Tensor& one, const Tensor& two, Tensor& out) {
     assert(one.shape.size() == 2 && two.shape.size() == 2);
     assert(one.shape[1] == 1 && two.shape[1] == 1);

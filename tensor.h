@@ -37,6 +37,8 @@ class Tensor {
     static void matmult(const Tensor& one, const Tensor& two, Tensor& out);
     static Tensor matmult(const Tensor& one, const Tensor& two);
 
+    static void elementmult(const Tensor& one, const Tensor& two, Tensor& out);
+
     static void outer_product(const Tensor& one, const Tensor& two, Tensor& out);
 
     static float mse(const Tensor& exp, const Tensor& actual);
