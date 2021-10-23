@@ -33,7 +33,6 @@ int main() {
             e1.array[i] = randFloat();
         }
 
-        Tensor::softmax(a, a);
         //mult->add->relu->mult2->add2->soft->mse
         //gradients:
         //nxn ->nx1->nx1 -> nxn ->nx1 ->nxn ->nx1
@@ -43,8 +42,7 @@ int main() {
 
         MatrixMult* mult2 = new MatrixMult(&relu->output, e);
         MatrixAdd* add2 = new MatrixAdd(&mult2->output, e1);
-        Operation* soft = new Softmax(&add2->output);
-        Operation* mse = new MSE(&soft->output, a);
+        Operation* mse = new MSE(&add2->output, a);
 
         for (int epochs = 0; epochs < 1000; epochs++) {
             mult->execute();
@@ -53,12 +51,11 @@ int main() {
 
             mult2->execute();
             add2->execute();
-            soft->execute();
             mse->execute();
 
             if (epochs == 0) {
                 cout << "Initial: ";
-                soft->output.print();
+                add2->output.print();
             }
 
             mult->gradOp();
@@ -67,23 +64,20 @@ int main() {
 
             mult2->gradOp();
             add2->gradOp();
-            soft->gradOp();
             mse->gradOp();
 
             Tensor mseT = mse->getGradOp();
             mseT.shape = {1, mseT.length};
-            Tensor mseSoft = Tensor::matmult(mseT, soft->getGradOp());
-            Tensor mseMult2({1, mseSoft.length});
-            Tensor::matmult(mseSoft, mult2->getGradOp(), mseMult2);
+            Tensor mseMult2({1, mseT.length});
+            Tensor::matmult(mseT, mult2->getGradOp(), mseMult2);
             mseMult2.shape = {mseMult2.length, 1};
             Tensor mseRelu(mseMult2.shape);
             Tensor::elementmult(mseMult2, relu->getGradOp(), mseRelu);
         
-            mseSoft.shape = {mseSoft.length, 1};
-            Tensor::add(add2->weights, mseSoft.scalarMult(-10.), add2->weights);
-            
-            Tensor mult2W({mseSoft.length, mseSoft.length});
-            Tensor::outer_product(mseSoft, mult2->getGradWeights(), mult2W);
+            mseT.shape = {mseT.length, 1};
+            Tensor::add(add2->weights, mseT.scalarMult(-.1), add2->weights);
+            Tensor mult2W({mseT.length, mseT.length});
+            Tensor::outer_product(mseT, mult2->getGradWeights(), mult2W);
             Tensor::add(mult2->weights, mult2W.scalarMult(-10.), mult2->weights);
 
             Tensor::add(add->weights, mseRelu.scalarMult(-10.), add->weights);
@@ -97,7 +91,7 @@ int main() {
         cout << "Expected: ";
         a.print();
         cout << "Experimental: ";
-        soft->output.print();
+        add2->output.print();
         cout << "Error: " << mse->output.array[0] << endl;
         cout << endl;
     }
