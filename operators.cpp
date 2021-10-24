@@ -67,23 +67,23 @@ Tensor Relu::getGradOp() {
     return gradOperation;
 }
 
-MSE::MSE(Tensor* input, Tensor actual)
+MSE::MSE(Tensor* input, Tensor* actual)
     : Operation(input) {
     this->actual = actual;
     this->output = Tensor({1});
-    this->gradOperation = Tensor({actual.length, 1});
+    this->gradOperation = Tensor({actual->length, 1});
 }
 
 void MSE::execute() {
-    output.array[0] = Tensor::mse(*input, actual);
+    output.array[0] = Tensor::mse(*input, *actual);
 }
 
 void MSE::gradOp() {
     Tensor& exp = *input;
-    assert(exp.shape == actual.shape);
+    assert(exp.shape == actual->shape);
     float scalar = 2. / exp.length;
     for (int i = 0; i < exp.length; i++) {
-        gradOperation.array[i] = scalar * (exp.array[i] - actual.array[i]);
+        gradOperation.array[i] = scalar * (exp.array[i] - actual->array[i]);
     }
 }
 
