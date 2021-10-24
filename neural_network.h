@@ -10,6 +10,7 @@ class Operation {
     Tensor* input = NULL;  //Note: be careful with this pointer! Stay away from new.
     Tensor output;
     Operation(Tensor* input);
+    Operation();
     virtual void execute() {}
     virtual void gradOp() {}
     virtual void gradWeights() {}

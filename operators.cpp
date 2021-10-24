@@ -6,6 +6,8 @@ Operation::Operation(Tensor* input) {
     this->input = input;
 }
 
+Operation::Operation() {}
+
 MatrixMult::MatrixMult(Tensor* input, Tensor weights)
     : Operation(input) {
     this->weights = weights;
