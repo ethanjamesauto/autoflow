@@ -67,6 +67,33 @@ Tensor Relu::getGradOp() {
     return gradOperation;
 }
 
+constexpr float sigmoid (float x) {
+    return 1 / (1 + exp(-x));
+}
+
+Sigmoid::Sigmoid(Tensor* input)
+    : Operation(input) {
+    this->output = Tensor(input->shape);
+    this->gradOperation = Tensor(input->shape);
+}
+
+void Sigmoid::execute() {
+    for (int i = 0; i < input->length; i++) {
+        output.array[i] = sigmoid(input->array[i]);
+    }
+}
+
+void Sigmoid::gradOp() {
+    for (int i = 0; i < input->length; i++) {
+        float x = output.array[i];
+        gradOperation.array[i] = x * (1 - x);
+    }
+}
+
+Tensor Sigmoid::getGradOp() {
+    return gradOperation;
+}
+
 MSE::MSE(Tensor* input, Tensor* actual)
     : Operation(input) {
     this->actual = actual;
