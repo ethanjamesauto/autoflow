@@ -33,6 +33,16 @@ class Relu : public Operation {
     Tensor getGradOp();
 };
 
+class Sigmoid : public Operation {
+    Tensor gradOperation;
+
+   public:
+    Sigmoid(Tensor* input);
+    void execute();
+    void gradOp();
+    Tensor getGradOp();
+};
+
 class MSE : public Operation {
     Tensor gradOperation;
 
