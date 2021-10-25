@@ -34,10 +34,10 @@ class Relu : public Operation {
 };
 
 class MSE : public Operation {
-    Tensor* actual;
     Tensor gradOperation;
 
    public:
+    Tensor* actual;
     MSE(Tensor* input, Tensor* actual);
     void execute();
     void gradOp();
