@@ -12,8 +12,9 @@ float randFloat() {
 }
 
 int isize = 10;
-int numFeatures = 5;
-int numEpochs = 4000;
+int numFeatures = 7;
+int numEpochs = 10000;
+float learning_rate = .23;
 int main() {
     srand(time(NULL));
     srand(9);
@@ -46,8 +47,9 @@ int main() {
         //nxn ->nx1->nx1 -> nxn ->nx1 ->nxn ->nx1
         MatrixMult* mult = new MatrixMult(&z[0], w);
         MatrixAdd* add = new MatrixAdd(&mult->output, w1);
-        //Relu* relu = new Relu(&add->output);
-        MatrixMult* mult2 = new MatrixMult(&add->output, e);
+        //MatrixMult* mult2 = new MatrixMult(&add->output, e);
+        Relu* relu = new Relu(&add->output);
+        MatrixMult* mult2 = new MatrixMult(&relu->output, e);
         MatrixAdd* add2 = new MatrixAdd(&mult2->output, e1);
         MSE* mse = new MSE(&add2->output, &a[0]);
         for (int epochs = 0; epochs < numEpochs; epochs++) {
@@ -56,7 +58,7 @@ int main() {
 
             mult->execute();
             add->execute();
-            //relu->execute();
+            relu->execute();
             mult2->execute();
             add2->execute();
             mse->execute();
@@ -68,31 +70,34 @@ int main() {
 
             mult->gradOp();
             add->gradOp();
-            //relu->gradOp();
+            relu->gradOp();
             mult2->gradOp();
             add2->gradOp();
             mse->gradOp();
 
             Tensor mseT = mse->getGradOp();
 
-            Tensor::add(add2->weights, mseT.scalarMult(-.05), add2->weights);
+            Tensor::add(add2->weights, mseT.scalarMult(-learning_rate), add2->weights);
 
             Tensor mult2W({mseT.length, mseT.length});
             Tensor::outer_product(mseT, mult2->getGradWeights(), mult2W);
-            Tensor::add(mult2->weights, mult2W.scalarMult(-.05), mult2->weights);
+            Tensor::add(mult2->weights, mult2W.scalarMult(-learning_rate), mult2->weights);
 
             mseT.shape = {1, mseT.length};
             Tensor mse_mult({mseT.shape});
             Tensor::matmult(mseT, mult2->getGradOp(), mse_mult);
             mse_mult.shape = {mse_mult.length, 1};
 
-            //Tensor::elementmult(mse_mult, relu->getGradOp(), mse_mult);
+            Tensor::elementmult(mse_mult, relu->getGradOp(), mse_mult);
 
-            Tensor::add(add->weights, mse_mult.scalarMult(-.1), add->weights);
-            
+            Tensor::add(add->weights, mse_mult.scalarMult(-learning_rate), add->weights);
+
             Tensor multW({mse_mult.length, mse_mult.length});
             Tensor::outer_product(mse_mult, mult->getGradWeights(), multW);
-            Tensor::add(mult->weights, multW.scalarMult(-.1), mult->weights);
+            Tensor::add(mult->weights, multW.scalarMult(-learning_rate), mult->weights);
+
+            //if (add2->output.array[0] != add2->output.array[0])
+            //    cout << "poop";
 
             if (numEpochs - epochs <= numFeatures) {
                 cout << "Input: ";
