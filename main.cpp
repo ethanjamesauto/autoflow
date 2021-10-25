@@ -11,16 +11,16 @@ float randFloat() {
     return rand() / (float)RAND_MAX * 2 - 1;
 }
 
-int size = 10;
+int isize = 10;
 int main() {
     srand(time(NULL));
     for (int k = 0; k < 10; k++) {
-        Tensor z({size, 1});
-        Tensor a({size, 1});
-        Tensor w({size, size});
-        Tensor w1({size, 1});
-        Tensor e({size, size});
-        Tensor e1({size, 1});
+        Tensor z({isize, 1});
+        Tensor a({isize, 1});
+        Tensor w({isize, isize});
+        Tensor w1({isize, 1});
+        Tensor e({isize, isize});
+        Tensor e1({isize, 1});
 
         for (int i = 0; i < z.length; i++) {
             z.array[i] = randFloat();
@@ -42,7 +42,7 @@ int main() {
 
         MatrixMult* mult2 = new MatrixMult(&relu->output, e);
         MatrixAdd* add2 = new MatrixAdd(&mult2->output, e1);
-        Operation* mse = new MSE(&add2->output, a);
+        Operation* mse = new MSE(&add2->output, &a);
 
         for (int epochs = 0; epochs < 1000; epochs++) {
             mult->execute();
