@@ -67,7 +67,7 @@ Tensor Relu::getGradOp() {
     return gradOperation;
 }
 
-constexpr float sigmoid (float x) {
+float sigmoid (float x) {
     return 1 / (1 + exp(-x));
 }
 
