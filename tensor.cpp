@@ -11,8 +11,7 @@ int getArrayLength(std::vector<int> shape) {
     return ret;
 }
 
-Tensor::Tensor() {
-}
+Tensor::Tensor() {}
 
 Tensor::Tensor(std::shared_ptr<float[]> array, std::vector<int> shape) {
     this->array = array;
