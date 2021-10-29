@@ -3,7 +3,7 @@
 #ifndef OPERATORS_H
 #define OPERATORS_H
 
-class MatrixMult : public Operation {
+class MatrixMult : public WeightedOperation {
     Tensor gradWeights;
 
    public:
@@ -15,7 +15,7 @@ class MatrixMult : public Operation {
     Tensor getGradWeights();
 };
 
-class MatrixAdd : public Operation {
+class MatrixAdd : public WeightedOperation {
    public:
     float learningRate = 0;
     Tensor weights;

@@ -8,8 +8,14 @@ Operation::Operation(Tensor* input) {
 
 Operation::Operation() {}
 
+WeightedOperation::WeightedOperation(Tensor* input)
+    : Operation(input) {}
+
+WeightedOperation::WeightedOperation()
+    : Operation() {}
+
 MatrixMult::MatrixMult(Tensor* input, Tensor weights)
-    : Operation(input) {
+    : WeightedOperation(input) {
     this->weights = weights;
     this->output = Tensor(input->shape);
     this->gradWeights = Tensor(input->shape);
@@ -30,7 +36,7 @@ Tensor MatrixMult::getGradWeights() {
 }
 
 MatrixAdd ::MatrixAdd(Tensor* input, Tensor weights)
-    : Operation(input) {
+    : WeightedOperation(input) {
     this->weights = weights;
     this->output = Tensor(input->shape);
 }
@@ -67,7 +73,7 @@ Tensor Relu::getGradOp() {
     return gradOperation;
 }
 
-float sigmoid (float x) {
+float sigmoid(float x) {
     return 1 / (1 + exp(-x));
 }
 
