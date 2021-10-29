@@ -9,7 +9,7 @@ class MatrixMult : public WeightedOperation {
    public:
     float learningRate = 0;
     Tensor weights;
-    MatrixMult(Tensor* input, Tensor& weights);
+    MatrixMult(Tensor* input, Tensor weights);
     void execute();
     Tensor getGradOp();
     Tensor getGradWeights();
@@ -19,7 +19,7 @@ class MatrixAdd : public WeightedOperation {
    public:
     float learningRate = 0;
     Tensor weights;
-    MatrixAdd(Tensor* input, Tensor& weights);
+    MatrixAdd(Tensor* input, Tensor weights);
     void execute();
     Tensor getGradOp();
     Tensor getGradWeights();
