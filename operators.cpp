@@ -14,7 +14,7 @@ WeightedOperation::WeightedOperation(Tensor* input)
 WeightedOperation::WeightedOperation()
     : Operation() {}
 
-MatrixMult::MatrixMult(Tensor* input, Tensor weights)
+MatrixMult::MatrixMult(Tensor* input, Tensor& weights)
     : WeightedOperation(input) {
     this->weights = weights;
     this->output = Tensor(input->shape);
@@ -35,7 +35,7 @@ Tensor MatrixMult::getGradWeights() {
     return *input;
 }
 
-MatrixAdd ::MatrixAdd(Tensor* input, Tensor weights)
+MatrixAdd::MatrixAdd(Tensor* input, Tensor& weights)
     : WeightedOperation(input) {
     this->weights = weights;
     this->output = Tensor(input->shape);
