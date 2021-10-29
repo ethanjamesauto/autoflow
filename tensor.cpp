@@ -62,3 +62,15 @@ void Tensor::print() {
     }
     std::cout << std::endl;
 }
+
+inline float randFloat() {
+    return rand() / (float)RAND_MAX * 2 - 1;
+}
+
+Tensor Tensor::random(const std::vector<int>& shape) {
+    Tensor t(shape);
+    for (int i = 0; i < t.length; i++) {
+        t.array[i] = randFloat();
+    }
+    return t;
+}

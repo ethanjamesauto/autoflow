@@ -18,7 +18,7 @@ class Tensor {
     Tensor(std::vector<float>& array, std::vector<int>& shape);
     Tensor(float val, std::vector<int> shape);
     Tensor(const Tensor& t);
-    Tensor(std::vector<int> shape); //TODO: find out why this can't pass by reference
+    Tensor(std::vector<int> shape);  //TODO: find out why this can't pass by reference
 
     void print();
 
@@ -42,6 +42,8 @@ class Tensor {
     static void outer_product(const Tensor& one, const Tensor& two, Tensor& out);
 
     static float mse(const Tensor& exp, const Tensor& actual);
+
+    static Tensor random(const std::vector<int>& shape);
 };
 
 #endif
