@@ -13,13 +13,13 @@ int getArrayLength(std::vector<int> shape) {
 
 Tensor::Tensor() {}
 
-Tensor::Tensor(std::shared_ptr<float[]> array, std::vector<int> shape) {
+Tensor::Tensor(std::shared_ptr<float[]> array, std::vector<int>& shape) {
     this->array = array;
     this->shape = shape;
     this->length = getArrayLength(shape);
 }
 
-Tensor::Tensor(std::vector<float> array, std::vector<int> shape) {
+Tensor::Tensor(std::vector<float>& array, std::vector<int>& shape) {
     this->shape = shape;
     this->length = getArrayLength(shape);
     this->array = std::shared_ptr<float[]>(new float[length]);

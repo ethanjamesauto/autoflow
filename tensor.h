@@ -14,11 +14,11 @@ class Tensor {
     int length;
 
     Tensor();
-    Tensor(std::shared_ptr<float[]> array, std::vector<int> shape);
-    Tensor(std::vector<float> array, std::vector<int> shape);
+    Tensor(std::shared_ptr<float[]> array, std::vector<int>& shape);
+    Tensor(std::vector<float>& array, std::vector<int>& shape);
     Tensor(float val, std::vector<int> shape);
     Tensor(const Tensor& t);
-    Tensor(std::vector<int> shape);
+    Tensor(std::vector<int> shape); //TODO: find out why this can't pass by reference
 
     void print();
 
