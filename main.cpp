@@ -8,7 +8,7 @@
 using namespace std;
 
 float randFloat1() {
-    return rand() / (float)RAND_MAX;
+    return rand() / (float)(RAND_MAX + 1);
 }
 
 int isize = 10;
