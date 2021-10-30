@@ -13,9 +13,15 @@ class Operation {
     Operation();
     virtual void execute() {}
     virtual void gradOp() {}
-    virtual void gradWeights() {}
     virtual Tensor getGradOp() { return Tensor(); }
-    virtual Tensor getGradWeights() { return Tensor(); };
+};
+
+class WeightedOperation : public Operation {
+   public:
+    WeightedOperation(Tensor* input);
+    WeightedOperation();
+    virtual void gradWeights() {}
+    virtual Tensor getGradWeights() { return Tensor(); }
 };
 
 class NeuralNetwork {

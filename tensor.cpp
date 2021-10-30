@@ -11,19 +11,15 @@ int getArrayLength(std::vector<int> shape) {
     return ret;
 }
 
-Tensor::Tensor() {
-    this->array = std::shared_ptr<float[]>(new float[0]);
-    this->shape = {};
-    this->length = 0;
-}
+Tensor::Tensor() {}
 
-Tensor::Tensor(std::shared_ptr<float[]> array, std::vector<int> shape) {
+Tensor::Tensor(std::shared_ptr<float[]> array, std::vector<int>& shape) {
     this->array = array;
     this->shape = shape;
     this->length = getArrayLength(shape);
 }
 
-Tensor::Tensor(std::vector<float> array, std::vector<int> shape) {
+Tensor::Tensor(std::vector<float>& array, std::vector<int>& shape) {
     this->shape = shape;
     this->length = getArrayLength(shape);
     this->array = std::shared_ptr<float[]>(new float[length]);
@@ -65,4 +61,16 @@ void Tensor::print() {
         std::cout << this->array[i] << " ";
     }
     std::cout << std::endl;
+}
+
+inline float randFloat() {
+    return rand() / (float)RAND_MAX * 2 - 1;
+}
+
+Tensor Tensor::random(const std::vector<int>& shape) {
+    Tensor t(shape);
+    for (int i = 0; i < t.length; i++) {
+        t.array[i] = randFloat();
+    }
+    return t;
 }
