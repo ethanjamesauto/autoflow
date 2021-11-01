@@ -5,7 +5,7 @@
 
 class MatrixMult : public WeightedOperation {
    public:
-    float learningRate = 0;
+    Tensor learningRate;
     Tensor weights;
     MatrixMult(Tensor* input, int outputLength);
     void execute();
@@ -15,7 +15,7 @@ class MatrixMult : public WeightedOperation {
 
 class MatrixAdd : public WeightedOperation {
    public:
-    float learningRate = 0;
+    Tensor learningRate;
     Tensor weights;
     MatrixAdd(Tensor* input);
     void execute();
