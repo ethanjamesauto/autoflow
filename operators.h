@@ -4,12 +4,10 @@
 #define OPERATORS_H
 
 class MatrixMult : public WeightedOperation {
-    Tensor gradWeights;
-
    public:
     float learningRate = 0;
     Tensor weights;
-    MatrixMult(Tensor* input, Tensor weights);
+    MatrixMult(Tensor* input, int outputLength);
     void execute();
     Tensor getGradOp();
     Tensor getGradWeights();
@@ -19,7 +17,7 @@ class MatrixAdd : public WeightedOperation {
    public:
     float learningRate = 0;
     Tensor weights;
-    MatrixAdd(Tensor* input, Tensor weights);
+    MatrixAdd(Tensor* input);
     void execute();
     Tensor getGradOp();
     Tensor getGradWeights();

@@ -14,11 +14,10 @@ WeightedOperation::WeightedOperation(Tensor* input)
 WeightedOperation::WeightedOperation()
     : Operation() {}
 
-MatrixMult::MatrixMult(Tensor* input, Tensor weights)
+MatrixMult::MatrixMult(Tensor* input, int outputLength)
     : WeightedOperation(input) {
-    this->weights = weights;
-    this->output = Tensor(input->shape);
-    this->gradWeights = Tensor(input->shape);
+    this->weights = Tensor::random({outputLength, input->length});
+    this->output = Tensor({outputLength, 1});
 }
 
 void MatrixMult::execute() {
@@ -35,9 +34,9 @@ Tensor MatrixMult::getGradWeights() {
     return *input;
 }
 
-MatrixAdd ::MatrixAdd(Tensor* input, Tensor weights)
+MatrixAdd ::MatrixAdd(Tensor* input)
     : WeightedOperation(input) {
-    this->weights = weights;
+    this->weights = Tensor::random(input->shape);
     this->output = Tensor(input->shape);
 }
 
