@@ -18,6 +18,7 @@ class Operation {
 
 class WeightedOperation : public Operation {
    public:
+    Tensor weights;
     WeightedOperation(Tensor* input);
     WeightedOperation();
     virtual void gradWeights() {}
