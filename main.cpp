@@ -12,31 +12,33 @@ float randFloat1() {
 }
 
 int isize = 10;
-int numFeatures = 5;
+int osize = 5;
+int numFeatures = 8;
 int numEpochs = 10000;
-float learning_rate = .15;
+int numLayers = 6;
+float learning_rate = .1;
 
 int main() {
     srand(time(NULL));
-    srand(5);
-    Tensor z[numFeatures];
-    Tensor a[numFeatures];
+    srand(10);
+    Tensor features[numFeatures];
+    Tensor labels[numFeatures];
     for (int i = 0; i < numFeatures; i++) {
-        z[i] = Tensor::random({isize, 1});
-        a[i] = Tensor::random({isize, 1});
+        features[i] = Tensor::random({isize, 1});
+        labels[i] = Tensor::random({osize, 1});
     }
 
-    Operation* operations[6];
+    Operation* operations[numLayers];
 
     //mult->add->relu->mult2->add2->soft->mse
     //gradients:
     //nxn ->nx1->nx1 -> nxn ->nx1 ->nxn ->nx1
-    MatrixMult mult = MatrixMult(&z[0], Tensor::random({isize, isize}));
-    MatrixAdd add = MatrixAdd(&mult.output, Tensor::random({isize, 1}));
+    MatrixMult mult = MatrixMult(&features[0], isize);
+    MatrixAdd add = MatrixAdd(&mult.output);
     Sigmoid relu = Sigmoid(&add.output);
-    MatrixMult mult2 = MatrixMult(&relu.output, Tensor::random({isize, isize}));
-    MatrixAdd add2 = MatrixAdd(&mult2.output, Tensor::random({isize, 1}));
-    MSE mse = MSE(&add2.output, &a[0]);
+    MatrixMult mult2 = MatrixMult(&relu.output, osize);
+    MatrixAdd add2 = MatrixAdd(&mult2.output);
+    MSE mse = MSE(&add2.output, &labels[0]);
 
     mult.learningRate = learning_rate;
     add.learningRate = learning_rate;
@@ -52,24 +54,23 @@ int main() {
 
     for (int epochs = 0; epochs < numEpochs; epochs++) {
         int index = (int)(randFloat1() * numFeatures);
-        mult.input = &z[index];
-        mse.actual = &a[index];
+        mult.input = &features[index];
+        mse.actual = &labels[index];
 
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < numLayers; i++) {
             operations[i]->execute();
             operations[i]->gradOp();
         }
-
         Tensor mseT = mse.getGradOp();
 
         Tensor::add(add2.weights, mseT.scalarMult(-add2.learningRate), add2.weights);
 
-        Tensor mult2W({mseT.length, mseT.length});
+        Tensor mult2W(mult2.weights.shape);
         Tensor::outer_product(mseT, mult2.getGradWeights(), mult2W);
         Tensor::add(mult2.weights, mult2W.scalarMult(-mult2.learningRate), mult2.weights);
 
-        mseT.shape = {1, mseT.length};
-        Tensor mse_mult({mseT.shape});
+        mseT.shape = {1, mse.input->length};
+        Tensor mse_mult({1, mult2.input->length});
         Tensor::matmult(mseT, mult2.getGradOp(), mse_mult);
         mse_mult.shape = {mse_mult.length, 1};
 
@@ -80,17 +81,24 @@ int main() {
         Tensor multW({mse_mult.length, mse_mult.length});
         Tensor::outer_product(mse_mult, mult.getGradWeights(), multW);
         Tensor::add(mult.weights, multW.scalarMult(-mult.learningRate), mult.weights);
+    }
+    for (int i = 0; i < numFeatures; i++) {
+        int index = i;
+        operations[0]->input = &features[index];
+        mse.actual = &labels[index];
 
-        if (numEpochs - epochs <= numFeatures) {
-            //cout << "Input: ";
-            //mult.input->print();
-            //cout << "Expected: ";
-            //mse.actual->print();
-            //cout << "Experimental: ";
-            //add2.output.print();
-            cout << "Error: " << mse.output.array[0] << endl;
-            //cout << endl;
+        for (int i = 0; i < numLayers; i++) {
+            operations[i]->execute();
         }
+        cout << "Input: ";
+        operations[0]->input->print();
+        cout << "Expected: ";
+        mse.actual->print();
+        cout << "Experimental: ";
+        add2.output.print();
+        cout << "Error: ";
+        mse.output.print();
+        cout << endl;
     }
     return 0;
 }
