@@ -16,11 +16,13 @@ class Operation {
     virtual Tensor getGradOp() { return Tensor(); }
 };
 
-class WeightedOperation : public Operation {
+class WeightedOperation : public Operation {    
    public:
     Tensor weights;
+    Tensor learningRate;
     WeightedOperation(Tensor* input);
     WeightedOperation();
+    void updateWeights(Tensor& factor);
     virtual void gradWeights() {}
     virtual Tensor getGradWeights() { return Tensor(); }
 };

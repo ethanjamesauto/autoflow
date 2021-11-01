@@ -5,7 +5,6 @@
 
 class MatrixMult : public WeightedOperation {
    public:
-    Tensor learningRate;
     MatrixMult(Tensor* input, int outputLength);
     void execute();
     Tensor getGradOp();
@@ -14,7 +13,6 @@ class MatrixMult : public WeightedOperation {
 
 class MatrixAdd : public WeightedOperation {
    public:
-    Tensor learningRate;
     MatrixAdd(Tensor* input);
     void execute();
     Tensor getGradOp();

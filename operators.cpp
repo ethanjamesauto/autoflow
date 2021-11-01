@@ -9,10 +9,19 @@ Operation::Operation(Tensor* input) {
 Operation::Operation() {}
 
 WeightedOperation::WeightedOperation(Tensor* input)
-    : Operation(input) {}
+    : Operation(input) {
+}
 
 WeightedOperation::WeightedOperation()
-    : Operation() {}
+    : Operation() {
+}
+
+void WeightedOperation::updateWeights(Tensor& factor) {
+    Tensor update(weights.shape); //TODO: possibly optimize??
+    Tensor::elementmult(factor, learningRate, update);
+    Tensor::scalarMult(update, -1, update);
+    Tensor::add(weights, update, weights);
+}
 
 MatrixMult::MatrixMult(Tensor* input, int outputLength)
     : WeightedOperation(input) {
