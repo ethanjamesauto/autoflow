@@ -50,6 +50,15 @@ class MSE : public Operation {
     Tensor getGradOp();
 };
 
+class SparseCrossEntropy : public Operation {
+   public:
+    Tensor* actual;
+    SparseCrossEntropy(Tensor* input, Tensor* actual);
+    void execute();
+    void gradOp();
+    Tensor getGradOp();
+};
+
 class Softmax : public Operation {
     Tensor gradOperation;
 
