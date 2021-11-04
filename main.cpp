@@ -11,16 +11,15 @@ float randFloat1() {
     return rand() / (float)(RAND_MAX + 1);
 }
 
-int isize = 10;
-int osize = 5;
-int numFeatures = 8;
-int numEpochs = 10000;
+int isize = 30;
+int osize = 3;
+int numFeatures = 2;
+int numEpochs = 1500;
 int numLayers = 6;
-float learning_rate = .1;
 
 int main() {
     srand(time(NULL));
-    srand(10);
+    srand(5);
     Tensor features[numFeatures];
     Tensor labels[numFeatures];
     for (int i = 0; i < numFeatures; i++) {
@@ -40,11 +39,6 @@ int main() {
     MatrixAdd add2 = MatrixAdd(&mult2.output);
     MSE mse = MSE(&add2.output, &labels[0]);
 
-    mult.learningRate = learning_rate;
-    add.learningRate = learning_rate;
-    mult2.learningRate = learning_rate;
-    add2.learningRate = learning_rate;
-
     operations[0] = &mult;
     operations[1] = &add;
     operations[2] = &relu;
@@ -62,12 +56,11 @@ int main() {
             operations[i]->gradOp();
         }
         Tensor mseT = mse.getGradOp();
-
-        Tensor::add(add2.weights, mseT.scalarMult(-add2.learningRate), add2.weights);
+        add2.RMSProp(mseT);
 
         Tensor mult2W(mult2.weights.shape);
         Tensor::outer_product(mseT, mult2.getGradWeights(), mult2W);
-        Tensor::add(mult2.weights, mult2W.scalarMult(-mult2.learningRate), mult2.weights);
+        mult2.RMSProp(mult2W);
 
         mseT.shape = {1, mse.input->length};
         Tensor mse_mult({1, mult2.input->length});
@@ -75,12 +68,11 @@ int main() {
         mse_mult.shape = {mse_mult.length, 1};
 
         Tensor::elementmult(mse_mult, relu.getGradOp(), mse_mult);
-
-        Tensor::add(add.weights, mse_mult.scalarMult(-add.learningRate), add.weights);
+        add.RMSProp(mse_mult);
 
         Tensor multW({mse_mult.length, mse_mult.length});
         Tensor::outer_product(mse_mult, mult.getGradWeights(), multW);
-        Tensor::add(mult.weights, multW.scalarMult(-mult.learningRate), mult.weights);
+        mult.RMSProp(multW);
     }
     for (int i = 0; i < numFeatures; i++) {
         int index = i;
@@ -100,5 +92,12 @@ int main() {
         mse.output.print();
         cout << endl;
     }
+    /*
+    cout << "Weights:" << endl;
+    mult.weights.print();
+    add.weights.print();
+    mult2.weights.print();
+    add2.weights.print();
+    */
     return 0;
 }
