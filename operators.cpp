@@ -2,37 +2,6 @@
 #include <cassert>
 #include <cmath>
 
-Operation::Operation(Tensor* input) {
-    this->input = input;
-}
-
-Operation::Operation() {}
-
-WeightedOperation::WeightedOperation(Tensor* input)
-    : Operation(input) {
-}
-
-WeightedOperation::WeightedOperation()
-    : Operation() {
-}
-
-void WeightedOperation::updateWeights(Tensor& factor) {
-    Tensor learningRate(.1, factor.shape);
-    Tensor update(weights.shape);  //TODO: possibly optimize??
-    Tensor::elementmult(factor, learningRate, update);
-    Tensor::scalarMult(update, -1, update);
-    Tensor::add(weights, update, weights);
-}
-#include <iostream>
-void WeightedOperation::RMSProp(Tensor& factor) {
-    float learning_rate = .001;
-    float b = .90;
-    for (int i = 0; i < weights.length; i++) {
-        learningRate.array[i] = b * learningRate.array[i] + (1 - b) * pow(factor.array[i], 2);
-        weights.array[i] -= learning_rate * factor.array[i] / sqrt(learningRate.array[i] + 1e-8);
-    }
-}
-
 MatrixMult::MatrixMult(Tensor* input, int outputLength)
     : WeightedOperation(input) {
     this->weights = Tensor::random({outputLength, input->length});
@@ -73,53 +42,6 @@ Tensor MatrixAdd::getGradWeights() {
     return Tensor(1, input->shape);
 }
 
-Relu::Relu(Tensor* input)
-    : Operation(input) {
-    this->output = Tensor(input->shape);
-    this->gradOperation = Tensor(input->shape);
-}
-
-void Relu::execute() {
-    Tensor::relu(*input, output);
-}
-
-void Relu::gradOp() {
-    for (int i = 0; i < input->length; i++) {
-        gradOperation.array[i] = input->array[i] > 0 ? 1 : 0;
-    }
-}
-
-Tensor Relu::getGradOp() {
-    return gradOperation;
-}
-
-float sigmoid(float x) {
-    return 1 / (1 + exp(-x));
-}
-
-Sigmoid::Sigmoid(Tensor* input)
-    : Operation(input) {
-    this->output = Tensor(input->shape);
-    this->gradOperation = Tensor(input->shape);
-}
-
-void Sigmoid::execute() {
-    for (int i = 0; i < input->length; i++) {
-        output.array[i] = sigmoid(input->array[i]);
-    }
-}
-
-void Sigmoid::gradOp() {
-    for (int i = 0; i < input->length; i++) {
-        float x = output.array[i];
-        gradOperation.array[i] = x * (1 - x);
-    }
-}
-
-Tensor Sigmoid::getGradOp() {
-    return gradOperation;
-}
-
 MSE::MSE(Tensor* input, Tensor* actual)
     : Operation(input) {
     this->actual = actual;
@@ -141,39 +63,5 @@ void MSE::gradOp() {
 }
 
 Tensor MSE::getGradOp() {
-    return gradOperation;
-}
-
-Softmax::Softmax(Tensor* input)
-    : Operation(input) {
-    this->output = Tensor(input->shape);
-    this->gradOperation = Tensor({input->length, input->length});
-}
-
-void Softmax::execute() {
-    Tensor::softmax(*input, output);
-}
-
-//TODO: don't make an nxn tensor; for optizimation
-void Softmax::gradOp() {
-    Tensor& z = *input;
-    float x = 0;
-    for (int i = 0; i < z.length; i++) {
-        x += exp(z.array[i]);
-    }
-    for (int k = 0; k < z.length; k++) {
-        for (int l = 0; l < z.length; l++) {
-            float& val = gradOperation.array[k * z.length + l];
-            val = 0;
-            if (k == l) {
-                val += x * exp(z.array[k]);
-            }
-            val -= exp(z.array[k]) * exp(z.array[l]);
-            val /= x * x;
-        }
-    }
-}
-
-Tensor Softmax::getGradOp() {
     return gradOperation;
 }
