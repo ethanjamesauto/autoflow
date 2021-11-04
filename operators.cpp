@@ -9,14 +9,34 @@ Operation::Operation(Tensor* input) {
 Operation::Operation() {}
 
 WeightedOperation::WeightedOperation(Tensor* input)
-    : Operation(input) {}
+    : Operation(input) {
+}
 
 WeightedOperation::WeightedOperation()
-    : Operation() {}
+    : Operation() {
+}
+
+void WeightedOperation::updateWeights(Tensor& factor) {
+    Tensor learningRate(.1, factor.shape);
+    Tensor update(weights.shape);  //TODO: possibly optimize??
+    Tensor::elementmult(factor, learningRate, update);
+    Tensor::scalarMult(update, -1, update);
+    Tensor::add(weights, update, weights);
+}
+#include <iostream>
+void WeightedOperation::RMSProp(Tensor& factor) {
+    float learning_rate = .001;
+    float b = .90;
+    for (int i = 0; i < weights.length; i++) {
+        learningRate.array[i] = b * learningRate.array[i] + (1 - b) * pow(factor.array[i], 2);
+        weights.array[i] -= learning_rate * factor.array[i] / sqrt(learningRate.array[i] + 1e-8);
+    }
+}
 
 MatrixMult::MatrixMult(Tensor* input, int outputLength)
     : WeightedOperation(input) {
     this->weights = Tensor::random({outputLength, input->length});
+    this->learningRate = Tensor(0, weights.shape);
     this->output = Tensor({outputLength, 1});
 }
 
@@ -37,6 +57,7 @@ Tensor MatrixMult::getGradWeights() {
 MatrixAdd ::MatrixAdd(Tensor* input)
     : WeightedOperation(input) {
     this->weights = Tensor::random(input->shape);
+    this->learningRate = Tensor(0, weights.shape);
     this->output = Tensor(input->shape);
 }
 
