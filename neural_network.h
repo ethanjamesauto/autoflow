@@ -23,6 +23,7 @@ class WeightedOperation : public Operation {
     WeightedOperation(Tensor* input);
     WeightedOperation();
     void updateWeights(Tensor& factor);
+    void RMSProp(Tensor& factor);
     virtual void gradWeights() {}
     virtual Tensor getGradWeights() { return Tensor(); }
 };

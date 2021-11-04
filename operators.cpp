@@ -17,10 +17,20 @@ WeightedOperation::WeightedOperation()
 }
 
 void WeightedOperation::updateWeights(Tensor& factor) {
-    Tensor update(weights.shape); //TODO: possibly optimize??
+    Tensor learningRate(.1, factor.shape);
+    Tensor update(weights.shape);  //TODO: possibly optimize??
     Tensor::elementmult(factor, learningRate, update);
     Tensor::scalarMult(update, -1, update);
     Tensor::add(weights, update, weights);
+}
+#include <iostream>
+void WeightedOperation::RMSProp(Tensor& factor) {
+    float learning_rate = .001;
+    float b = .90;
+    for (int i = 0; i < weights.length; i++) {
+        learningRate.array[i] = b * learningRate.array[i] + (1 - b) * pow(factor.array[i], 2);
+        weights.array[i] -= learning_rate * factor.array[i] / sqrt(learningRate.array[i] + 1e-8);
+    }
 }
 
 MatrixMult::MatrixMult(Tensor* input, int outputLength)
