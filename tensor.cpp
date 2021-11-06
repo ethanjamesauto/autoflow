@@ -3,6 +3,8 @@
 #include <cstring>
 #include <iostream>
 
+#define SMALLER_FLOAT 3
+
 int getArrayLength(std::vector<int> shape) {
     int ret = 1;
     for (int s : shape) {
@@ -64,7 +66,7 @@ void Tensor::print() {
 }
 
 inline float randFloat() {
-    return rand() / (float)RAND_MAX * 2 - 1;
+    return (rand() / (float)RAND_MAX * 2 - 1) / SMALLER_FLOAT;
 }
 
 Tensor Tensor::random(const std::vector<int>& shape) {
