@@ -1,7 +1,10 @@
 #include <cassert>
 #include <cmath>
+#include <fstream>
 #include <iostream>
 #include <memory>
+#include <sstream>
+#include <string>
 #include <vector>
 #include "neural_network.h"
 #include "operators.h"
@@ -11,93 +14,144 @@ float randFloat1() {
     return rand() / (float)(RAND_MAX + 1);
 }
 
-int isize = 30;
-int osize = 3;
-int numFeatures = 2;
-int numEpochs = 1500;
-int numLayers = 6;
+int isize = 28 * 28;
+int osize = 10;
+int numFeatures = 18000;
+int numTesting = 1000;
+int numEpochs = 1000;
+int numLayers = 7;
+int batch_size = 64;
 
 int main() {
-    srand(time(NULL));
-    srand(5);
-    Tensor features[numFeatures];
-    Tensor labels[numFeatures];
-    for (int i = 0; i < numFeatures; i++) {
-        features[i] = Tensor::random({isize, 1});
-        labels[i] = Tensor::random({osize, 1});
-    }
+    srand(time(NULL));  //set up random number generator to the time
+    srand(15);          //use a pre-determined seed; comment out this line for different rng for each run
 
     Operation* operations[numLayers];
+    Tensor features[numFeatures + numTesting];
+    Tensor labels[numFeatures + numTesting];
 
-    //mult->add->relu->mult2->add2->soft->mse
-    //gradients:
-    //nxn ->nx1->nx1 -> nxn ->nx1 ->nxn ->nx1
+    //read handwritten numbers and their values into data.
+    //note: this is very slow
+    ifstream f("data.txt");
+    for (int i = 0; i < numFeatures + numTesting; i++) {
+        if (i % 100 == 0) {
+            cout << "Reading from file, line: " << i << endl;
+        }
+        features[i] = Tensor({isize, 1});
+        labels[i] = Tensor({osize, 1});
+        string s;
+        getline(f, s);
+        stringstream ss(s);
+        for (int j = 0; j < 28 * 28; j++) {
+            ss >> features[i].array[j];
+        }
+        getline(f, s);
+        ss = stringstream(s);
+        for (int j = 0; j < 10; j++) {
+            ss >> labels[i].array[j];
+        }
+    }
+
+    //set up each individual layer, then add them into an array for easy execution
     MatrixMult mult = MatrixMult(&features[0], isize);
     MatrixAdd add = MatrixAdd(&mult.output);
-    Sigmoid relu = Sigmoid(&add.output);
+    Relu relu = Relu(&add.output);
     MatrixMult mult2 = MatrixMult(&relu.output, osize);
     MatrixAdd add2 = MatrixAdd(&mult2.output);
-    MSE mse = MSE(&add2.output, &labels[0]);
-
+    Softmax soft = Softmax(&add2.output);
+    CategoricalCrossEntropy cce = CategoricalCrossEntropy(&soft.output, &labels[0]);
     operations[0] = &mult;
     operations[1] = &add;
     operations[2] = &relu;
     operations[3] = &mult2;
     operations[4] = &add2;
-    operations[5] = &mse;
+    operations[5] = &soft;
+    operations[6] = &cce;
 
     for (int epochs = 0; epochs < numEpochs; epochs++) {
-        int index = (int)(randFloat1() * numFeatures);
-        mult.input = &features[index];
-        mse.actual = &labels[index];
+        cout << "Epoch: " << epochs << " of " << numEpochs << endl;
 
-        for (int i = 0; i < numLayers; i++) {
-            operations[i]->execute();
-            operations[i]->gradOp();
+        //set up tensors to store weights for mini-batch gradient descent
+        Tensor add2G(0, add2.weights.shape);
+        Tensor mult2G(0, mult2.weights.shape);
+        Tensor addG(0, add.weights.shape);
+        Tensor multG(0, mult.weights.shape);
+
+        for (int i = 0; i < batch_size; i++) {
+            //set feature and label
+            int index = (int)(randFloat1() * numFeatures);
+            mult.input = &features[index];
+            cce.actual = &labels[index];
+
+            //execute the model, and calculate the gradient
+            for (int i = 0; i < numLayers; i++) {
+                operations[i]->execute();
+                operations[i]->gradOp();
+            }
+
+            //backpropagate
+            Tensor mseT = cce.getGradOp();
+            Tensor::add(add2G, mseT, add2G);
+
+            Tensor mult2W(mult2.weights.shape);
+            Tensor::outer_product(mseT, mult2.getGradWeights(), mult2W);
+            Tensor::add(mult2G, mult2W, mult2G);
+
+            mseT.shape = {1, cce.input->length};
+            Tensor mse_mult({1, mult2.input->length});
+            Tensor::matmult(mseT, mult2.getGradOp(), mse_mult);
+            mse_mult.shape = {mse_mult.length, 1};
+
+            Tensor::elementmult(mse_mult, relu.getGradOp(), mse_mult);
+            Tensor::add(addG, mse_mult, addG);
+
+            Tensor multW({mse_mult.length, mse_mult.length});
+            Tensor::outer_product(mse_mult, mult.getGradWeights(), multW);
+            Tensor::add(multG, multW, multG);
         }
-        Tensor mseT = mse.getGradOp();
-        add2.RMSProp(mseT);
 
-        Tensor mult2W(mult2.weights.shape);
-        Tensor::outer_product(mseT, mult2.getGradWeights(), mult2W);
-        mult2.RMSProp(mult2W);
+        //update weights
+        Tensor::scalarMult(add2G, 1. / batch_size, add2G);
+        add2.RMSProp(add2G);
 
-        mseT.shape = {1, mse.input->length};
-        Tensor mse_mult({1, mult2.input->length});
-        Tensor::matmult(mseT, mult2.getGradOp(), mse_mult);
-        mse_mult.shape = {mse_mult.length, 1};
+        Tensor::scalarMult(mult2G, 1. / batch_size, mult2G);
+        mult2.RMSProp(mult2G);
 
-        Tensor::elementmult(mse_mult, relu.getGradOp(), mse_mult);
-        add.RMSProp(mse_mult);
+        Tensor::scalarMult(addG, 1. / batch_size, addG);
+        add.RMSProp(addG);
 
-        Tensor multW({mse_mult.length, mse_mult.length});
-        Tensor::outer_product(mse_mult, mult.getGradWeights(), multW);
-        mult.RMSProp(multW);
+        Tensor::scalarMult(multG, 1. / batch_size, multG);
+        mult.RMSProp(multG);
     }
-    for (int i = 0; i < numFeatures; i++) {
-        int index = i;
-        operations[0]->input = &features[index];
-        mse.actual = &labels[index];
+
+    //run testing data and see how accurate the model is
+    int numSuccessful = 0;
+    for (int i = numFeatures; i < numFeatures + numTesting; i++) {
+        mult.input = &features[i];
+        cce.actual = &labels[i];
 
         for (int i = 0; i < numLayers; i++) {
             operations[i]->execute();
         }
-        cout << "Input: ";
-        operations[0]->input->print();
+        if (cce.output.array[0] < .5) {
+            numSuccessful++;
+        }
+        //cout << "Input: ";
+        //mult.input->print();
         cout << "Expected: ";
-        mse.actual->print();
+        cce.actual->print();
         cout << "Experimental: ";
-        add2.output.print();
+        soft.output.print();
         cout << "Error: ";
-        mse.output.print();
+        cce.output.print();
         cout << endl;
     }
+    cout << "Accuracy: " << (float)numSuccessful / numTesting << endl;
     /*
     cout << "Weights:" << endl;
     mult.weights.print();
     add.weights.print();
     mult2.weights.print();
     add2.weights.print();
-    */
-    return 0;
+    //*/
 }
