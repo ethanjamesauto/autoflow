@@ -50,10 +50,10 @@ class MSE : public Operation {
     Tensor getGradOp();
 };
 
-class SparseCrossEntropy : public Operation {
+class CategoricalCrossEntropy : public Operation {
    public:
     Tensor* actual;
-    SparseCrossEntropy(Tensor* input, Tensor* actual);
+    CategoricalCrossEntropy(Tensor* input, Tensor* actual);
     void execute();
     void gradOp();
     Tensor getGradOp();
