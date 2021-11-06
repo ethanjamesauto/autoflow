@@ -51,6 +51,8 @@ class MSE : public Operation {
 };
 
 class CategoricalCrossEntropy : public Operation {
+    Tensor gradOperation;
+
    public:
     Tensor* actual;
     CategoricalCrossEntropy(Tensor* input, Tensor* actual);
