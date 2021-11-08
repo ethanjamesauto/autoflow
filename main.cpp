@@ -18,13 +18,13 @@ int isize = 28 * 28;
 int osize = 10;
 int numFeatures = 18000;
 int numTesting = 1000;
-int numEpochs = 1000;
+int numEpochs = 2000;
 int numLayers = 7;
-int batch_size = 64;
+int batch_size = 32;
 
 int main() {
     srand(time(NULL));  //set up random number generator to the time
-    srand(15);          //use a pre-determined seed; comment out this line for different rng for each run
+    srand(36);          //use a pre-determined seed; comment out this line for different rng for each run
 
     Operation* operations[numLayers];
     Tensor features[numFeatures + numTesting];
@@ -133,8 +133,11 @@ int main() {
         for (int i = 0; i < numLayers; i++) {
             operations[i]->execute();
         }
-        if (cce.output.array[0] < .5) {
-            numSuccessful++;
+        for (int i = 0; i < soft.output.length; i++) {
+            if (abs(cce.actual->array[i] - 1.) < 0.0001 && soft.output.array[i] > .5) {
+                numSuccessful++;
+                break;
+            }
         }
         //cout << "Input: ";
         //mult.input->print();
@@ -147,7 +150,7 @@ int main() {
         cout << endl;
     }
     cout << "Accuracy: " << (float)numSuccessful / numTesting << endl;
-    /*
+    //*
     cout << "Weights:" << endl;
     mult.weights.print();
     add.weights.print();
