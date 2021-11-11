@@ -22,7 +22,7 @@ void WeightedOperation::updateWeights(Tensor& factor) {
     Tensor::scalarMult(update, -1, update);
     Tensor::add(weights, update, weights);
 }
-#include <iostream>
+
 void WeightedOperation::RMSProp(Tensor& factor) {
     float learning_rate = .001;
     float b = .90;
