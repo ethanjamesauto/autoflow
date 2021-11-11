@@ -5,7 +5,16 @@
 #define TENSOR_H
 
 /**
- * @brief Implementation of a tensor with variable shape. Essentially equivalent to a TensorFlow tensor.
+ * @brief Implementation of a mutable tensor. This class includes both static 
+ * operations that allow the user to specify references to input and output tensors,
+ * and non-static operations that do not mutate the tensor, instead returning
+ * a new tensor. A tensor's data is stored in the form of an array, referenced
+ * by a std::shared_ptr<float[]>. The default = operator will do a deep copy
+ * of the tensor's shape, but NOT the array (contents) of a tensor. This
+ * is due to the fact that a common tensor operation involves creating a new tensor
+ * with a different shape than the previous tensor, but with the same contents.
+ * To perform a full deep copy of a tensor, use the Tensor(const Tensor& t)
+ * constructor.
  */
 class Tensor {
    public:
