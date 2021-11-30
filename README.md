@@ -1,4 +1,4 @@
-# ml-framework
+# autoflow
 A machine learning framework for learning/testing machine learning concepts
 
 # Features
