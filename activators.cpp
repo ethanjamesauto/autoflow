@@ -58,9 +58,8 @@ void Softmax::execute() {
     Tensor::softmax(*input, output);
 }
 
-//TODO: don't make an nxn tensor; for optizimation
 void Softmax::gradOp() {
-    Tensor& z = *input;
+    Tensor& z = *input; //TODO: see if there's a difference between this and directly referencing input
     float x = 0;
     for (int i = 0; i < z.length; i++) {
         x += exp(z.array[i]);
