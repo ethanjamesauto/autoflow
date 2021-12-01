@@ -53,7 +53,7 @@ int main() {
     }
 
     //set up each individual layer, then add them into an array for easy execution
-    MatrixMult mult = MatrixMult(&features[0], isize);
+    MatrixMult mult = MatrixMult(&features[0], 512);
     MatrixAdd add = MatrixAdd(&mult.output);
     Relu relu = Relu(&add.output);
     MatrixMult mult2 = MatrixMult(&relu.output, osize);
@@ -105,8 +105,9 @@ int main() {
             Tensor::elementmult(mse_mult, relu.getGradOp(), mse_mult);
             Tensor::add(addG, mse_mult, addG);
 
-            Tensor multW({mse_mult.length, mse_mult.length});
-            Tensor::outer_product(mse_mult, mult.getGradWeights(), multW);
+            Tensor multWeights = mult.getGradWeights();
+            Tensor multW({mse_mult.length, multWeights.length});
+            Tensor::outer_product(mse_mult, multWeights, multW);
             Tensor::add(multG, multW, multG);
         }
 
@@ -141,6 +142,7 @@ int main() {
         }
         //cout << "Input: ";
         //mult.input->print();
+        /*
         cout << "Expected: ";
         cce.actual->print();
         cout << "Experimental: ";
@@ -148,9 +150,13 @@ int main() {
         cout << "Error: ";
         cce.output.print();
         cout << endl;
+        //*/
+    }
+    for (int i = 0; i < numLayers; i++) {
+        cout << "Layer " << i + 1 << " input and output sizes: (" << operations[i]->input->shape[0] << ", " << operations[i]->output.shape[0] << ")" << endl;
     }
     cout << "Accuracy: " << (float)numSuccessful / numTesting << endl;
-    //*
+    /*
     cout << "Weights:" << endl;
     mult.weights.print();
     add.weights.print();
