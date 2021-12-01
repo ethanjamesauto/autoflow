@@ -88,7 +88,6 @@ void CategoricalCrossEntropy::execute() {
  * 
  */
 void CategoricalCrossEntropy::gradOp() {
-    Tensor tmp = actual->scalarMult(-1);
     for (int i = 0; i < input->length; i++) {
         gradOperation.array[i] = input->array[i] - actual->array[i];
     }
