@@ -11,7 +11,7 @@
 using namespace std;
 
 float randFloat1() {
-    return rand() / (float)(RAND_MAX + 1);
+    return rand() / (float) RAND_MAX;
 }
 
 int isize = 28 * 28;
